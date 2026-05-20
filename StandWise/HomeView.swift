@@ -15,7 +15,7 @@ struct HomeView: View {
                     .font(.system(size: 48))
                 Text("Hello,")
                     .font(Font.title)
-                Text("Peter Tan")
+                Text("All ")
                     .font(Font.title.bold())
 
                 Spacer()
