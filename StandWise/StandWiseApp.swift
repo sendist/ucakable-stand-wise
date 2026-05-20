@@ -5,14 +5,15 @@
 //  Created by Sendi Setiawan on 19/05/26.
 //
 
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 @main
 struct StandWiseApp: App {
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
             Item.self,
+            User.self,
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 
@@ -25,7 +26,7 @@ struct StandWiseApp: App {
 
     var body: some Scene {
         WindowGroup {
-            HomeView()
+            ContentView()
         }
         .modelContainer(sharedModelContainer)
     }
