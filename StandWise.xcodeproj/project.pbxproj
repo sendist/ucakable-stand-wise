@@ -51,6 +51,38 @@
 			);
 			target = 837ACBF62FBC494E004F1B0C /* IndicatorExtension */;
 		};
+		837ACC302FBD9D98004F1B0C /* Exceptions for "Data" folder in "StandWise" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				HealthManager.swift,
+				Item.swift,
+				User.swift,
+			);
+			target = 837ACB9A2FBC0221004F1B0C /* StandWise */;
+		};
+		837ACC312FBD9D98004F1B0C /* Exceptions for "Data" folder in "IndicatorExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				HealthManager.swift,
+				Item.swift,
+				User.swift,
+			);
+			target = 837ACBF62FBC494E004F1B0C /* IndicatorExtension */;
+		};
+		837ACC342FBD9DC4004F1B0C /* Exceptions for "Feature" folder in "StandWise" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Home/HomeView.swift,
+			);
+			target = 837ACB9A2FBC0221004F1B0C /* StandWise */;
+		};
+		837ACC352FBD9DC4004F1B0C /* Exceptions for "Feature" folder in "IndicatorExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Home/HomeView.swift,
+			);
+			target = 837ACBF62FBC494E004F1B0C /* IndicatorExtension */;
+		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -65,6 +97,24 @@
 				837ACC0E2FBC4950004F1B0C /* Exceptions for "Indicator" folder in "IndicatorExtension" target */,
 			);
 			path = Indicator;
+			sourceTree = "<group>";
+		};
+		837ACC2F2FBD9D8F004F1B0C /* Data */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				837ACC302FBD9D98004F1B0C /* Exceptions for "Data" folder in "StandWise" target */,
+				837ACC312FBD9D98004F1B0C /* Exceptions for "Data" folder in "IndicatorExtension" target */,
+			);
+			path = Data;
+			sourceTree = "<group>";
+		};
+		837ACC322FBD9DB2004F1B0C /* Feature */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				837ACC342FBD9DC4004F1B0C /* Exceptions for "Feature" folder in "StandWise" target */,
+				837ACC352FBD9DC4004F1B0C /* Exceptions for "Feature" folder in "IndicatorExtension" target */,
+			);
+			path = Feature;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -92,6 +142,8 @@
 		837ACB922FBC0221004F1B0C = {
 			isa = PBXGroup;
 			children = (
+				837ACC322FBD9DB2004F1B0C /* Feature */,
+				837ACC2F2FBD9D8F004F1B0C /* Data */,
 				837ACB9D2FBC0221004F1B0C /* StandWise */,
 				837ACBFD2FBC494F004F1B0C /* Indicator */,
 				837ACBF82FBC494E004F1B0C /* Frameworks */,
@@ -158,6 +210,8 @@
 			);
 			fileSystemSynchronizedGroups = (
 				837ACBFD2FBC494F004F1B0C /* Indicator */,
+				837ACC2F2FBD9D8F004F1B0C /* Data */,
+				837ACC322FBD9DB2004F1B0C /* Feature */,
 			);
 			name = IndicatorExtension;
 			packageProductDependencies = (

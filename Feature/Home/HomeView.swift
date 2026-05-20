@@ -14,7 +14,7 @@ struct HomeView: View {
         switch healthManager.todaySteps {
         case 0..<1000:
             return Color(.green)
-        case 1000..<2000:
+        case 1000..<3000:
             return Color(.yellow)
         default:
             return Color(.red)
