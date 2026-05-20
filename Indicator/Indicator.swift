@@ -10,11 +10,11 @@ import SwiftUI
 
 struct Provider: AppIntentTimelineProvider {
     func placeholder(in context: Context) -> SimpleEntry {
-        SimpleEntry(date: Date(), configuration: ConfigurationAppIntent())
+        SimpleEntry(date: Date(), stepCount: 0, configuration: ConfigurationAppIntent())
     }
 
     func snapshot(for configuration: ConfigurationAppIntent, in context: Context) async -> SimpleEntry {
-        SimpleEntry(date: Date(), configuration: configuration)
+        SimpleEntry(date: Date(), stepCount: 0, configuration: configuration)
     }
     
     func timeline(for configuration: ConfigurationAppIntent, in context: Context) async -> Timeline<SimpleEntry> {
@@ -24,7 +24,7 @@ struct Provider: AppIntentTimelineProvider {
         let currentDate = Date()
         for hourOffset in 0 ..< 5 {
             let entryDate = Calendar.current.date(byAdding: .hour, value: hourOffset, to: currentDate)!
-            let entry = SimpleEntry(date: entryDate, configuration: configuration)
+            let entry = SimpleEntry(date: entryDate, stepCount: 0, configuration: configuration)
             entries.append(entry)
         }
 
@@ -38,6 +38,7 @@ struct Provider: AppIntentTimelineProvider {
 
 struct SimpleEntry: TimelineEntry {
     let date: Date
+    let stepCount: Int
     let configuration: ConfigurationAppIntent
 }
 
@@ -51,7 +52,10 @@ struct IndicatorEntryView : View {
 
             Text("Favorite Emoji:")
             Text(entry.configuration.favoriteEmoji)
+            
+            Text("Steps: \(entry.stepCount)")
         }
+        .background(Color(.yellow))
     }
 }
 
@@ -83,6 +87,6 @@ extension ConfigurationAppIntent {
 #Preview(as: .systemSmall) {
     Indicator()
 } timeline: {
-    SimpleEntry(date: .now, configuration: .smiley)
-    SimpleEntry(date: .now, configuration: .starEyes)
+    SimpleEntry(date: .now, stepCount: 100, configuration: .smiley)
+    SimpleEntry(date: .now, stepCount: 50, configuration: .starEyes)
 }

@@ -6,14 +6,65 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		837ACBFA2FBC494F004F1B0C /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 837ACBF92FBC494E004F1B0C /* WidgetKit.framework */; };
+		837ACBFC2FBC494F004F1B0C /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 837ACBFB2FBC494F004F1B0C /* SwiftUI.framework */; };
+		837ACC0D2FBC4950004F1B0C /* IndicatorExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 837ACBF72FBC494E004F1B0C /* IndicatorExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		837ACC0B2FBC4950004F1B0C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 837ACB932FBC0221004F1B0C /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 837ACBF62FBC494E004F1B0C;
+			remoteInfo = IndicatorExtension;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		837ACC122FBC4950004F1B0C /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				837ACC0D2FBC4950004F1B0C /* IndicatorExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		837ACB9B2FBC0221004F1B0C /* StandWise.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = StandWise.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		837ACBF72FBC494E004F1B0C /* IndicatorExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = IndicatorExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		837ACBF92FBC494E004F1B0C /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		837ACBFB2FBC494F004F1B0C /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		837ACC0E2FBC4950004F1B0C /* Exceptions for "Indicator" folder in "IndicatorExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 837ACBF62FBC494E004F1B0C /* IndicatorExtension */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		837ACB9D2FBC0221004F1B0C /* StandWise */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = StandWise;
+			sourceTree = "<group>";
+		};
+		837ACBFD2FBC494F004F1B0C /* Indicator */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				837ACC0E2FBC4950004F1B0C /* Exceptions for "Indicator" folder in "IndicatorExtension" target */,
+			);
+			path = Indicator;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -26,6 +77,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		837ACBF42FBC494E004F1B0C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				837ACBFC2FBC494F004F1B0C /* SwiftUI.framework in Frameworks */,
+				837ACBFA2FBC494F004F1B0C /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -33,6 +93,8 @@
 			isa = PBXGroup;
 			children = (
 				837ACB9D2FBC0221004F1B0C /* StandWise */,
+				837ACBFD2FBC494F004F1B0C /* Indicator */,
+				837ACBF82FBC494E004F1B0C /* Frameworks */,
 				837ACB9C2FBC0221004F1B0C /* Products */,
 			);
 			sourceTree = "<group>";
@@ -41,8 +103,18 @@
 			isa = PBXGroup;
 			children = (
 				837ACB9B2FBC0221004F1B0C /* StandWise.app */,
+				837ACBF72FBC494E004F1B0C /* IndicatorExtension.appex */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		837ACBF82FBC494E004F1B0C /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				837ACBF92FBC494E004F1B0C /* WidgetKit.framework */,
+				837ACBFB2FBC494F004F1B0C /* SwiftUI.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -55,10 +127,12 @@
 				837ACB972FBC0221004F1B0C /* Sources */,
 				837ACB982FBC0221004F1B0C /* Frameworks */,
 				837ACB992FBC0221004F1B0C /* Resources */,
+				837ACC122FBC4950004F1B0C /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				837ACC0C2FBC4950004F1B0C /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				837ACB9D2FBC0221004F1B0C /* StandWise */,
@@ -69,6 +143,28 @@
 			productName = StandWise;
 			productReference = 837ACB9B2FBC0221004F1B0C /* StandWise.app */;
 			productType = "com.apple.product-type.application";
+		};
+		837ACBF62FBC494E004F1B0C /* IndicatorExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 837ACC0F2FBC4950004F1B0C /* Build configuration list for PBXNativeTarget "IndicatorExtension" */;
+			buildPhases = (
+				837ACBF32FBC494E004F1B0C /* Sources */,
+				837ACBF42FBC494E004F1B0C /* Frameworks */,
+				837ACBF52FBC494E004F1B0C /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				837ACBFD2FBC494F004F1B0C /* Indicator */,
+			);
+			name = IndicatorExtension;
+			packageProductDependencies = (
+			);
+			productName = IndicatorExtension;
+			productReference = 837ACBF72FBC494E004F1B0C /* IndicatorExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -81,6 +177,9 @@
 				LastUpgradeCheck = 2650;
 				TargetAttributes = {
 					837ACB9A2FBC0221004F1B0C = {
+						CreatedOnToolsVersion = 26.5;
+					};
+					837ACBF62FBC494E004F1B0C = {
 						CreatedOnToolsVersion = 26.5;
 					};
 				};
@@ -100,12 +199,20 @@
 			projectRoot = "";
 			targets = (
 				837ACB9A2FBC0221004F1B0C /* StandWise */,
+				837ACBF62FBC494E004F1B0C /* IndicatorExtension */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		837ACB992FBC0221004F1B0C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		837ACBF52FBC494E004F1B0C /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -122,7 +229,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		837ACBF32FBC494E004F1B0C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		837ACC0C2FBC4950004F1B0C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 837ACBF62FBC494E004F1B0C /* IndicatorExtension */;
+			targetProxy = 837ACC0B2FBC4950004F1B0C /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		837ACBA62FBC0222004F1B0C /* Debug */ = {
@@ -310,6 +432,66 @@
 			};
 			name = Release;
 		};
+		837ACC102FBC4950004F1B0C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 4JUFXF99LG;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Indicator/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Indicator;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ucakable.StandWise.Indicator;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		837ACC112FBC4950004F1B0C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 4JUFXF99LG;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Indicator/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Indicator;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ucakable.StandWise.Indicator;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -327,6 +509,15 @@
 			buildConfigurations = (
 				837ACBA92FBC0222004F1B0C /* Debug */,
 				837ACBAA2FBC0222004F1B0C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		837ACC0F2FBC4950004F1B0C /* Build configuration list for PBXNativeTarget "IndicatorExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				837ACC102FBC4950004F1B0C /* Debug */,
+				837ACC112FBC4950004F1B0C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

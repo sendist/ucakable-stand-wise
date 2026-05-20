@@ -9,7 +9,20 @@ import SwiftUI
 
 struct HomeView: View {
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        ScrollView {
+            HStack {
+                Image(systemName: "person.crop.circle.fill")
+                    .font(.system(size: 48))
+                Text("Hello,")
+                    .font(Font.title)
+                Text("Peter T")
+                    .font(Font.title.bold())
+
+                Spacer()
+            }
+            .padding(20)
+            
+        }
     }
 }
 
