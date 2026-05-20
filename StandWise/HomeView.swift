@@ -9,6 +9,17 @@ import SwiftUI
 
 struct HomeView: View {
     @State private var healthManager = HealthManager()
+    
+    private var indicatorColor: Color {
+        switch healthManager.todaySteps {
+        case 0..<1000:
+            return Color(.green)
+        case 1000..<2000:
+            return Color(.yellow)
+        default:
+            return Color(.red)
+        }
+    }
 
     var body: some View {
         NavigationStack {
@@ -24,11 +35,10 @@ struct HomeView: View {
                             Text("All")
                                 .font(.title.bold())
                         }
-
                         Spacer()
                     }
                     .padding(20)
-                    .background(Color.red)
+                    .background(indicatorColor)
                     .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
 
                     VStack(alignment: .leading, spacing: 12) {

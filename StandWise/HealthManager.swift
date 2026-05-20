@@ -8,7 +8,6 @@
 import Foundation
 import HealthKit
 import Observation
-
 @MainActor
 @Observable
 final class HealthManager {
@@ -61,7 +60,7 @@ final class HealthManager {
     }
 
     private func requestAuthorization(reading types: Set<HKObjectType>) async throws {
-        try await withCheckedThrowingContinuation { continuation in
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
             healthStore.requestAuthorization(toShare: [], read: types) { success, error in
                 if let error {
                     continuation.resume(throwing: error)
@@ -113,3 +112,4 @@ enum HealthManagerError: LocalizedError {
         }
     }
 }
+
