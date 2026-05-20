@@ -21,6 +21,7 @@ struct HomeView: View {
                 Spacer()
             }
             .padding(20)
+            .background(Color(.systemGray6))
             
         }
     }
