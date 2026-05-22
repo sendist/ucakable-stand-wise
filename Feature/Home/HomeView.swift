@@ -47,55 +47,9 @@ struct HomeView: View {
                     .background(indicatorColor)
                     .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
 
-                    VStack(alignment: .leading, spacing: 12) {
-                        HStack {
-                            Label("Today Steps", systemImage: "figure.walk")
-                                .font(.headline)
+                    stepsCard
 
-                            Spacer()
-
-                            Button {
-                                Task {
-                                    await healthManager.refreshTodaySteps()
-                                }
-                            } label: {
-                                Image(systemName: "arrow.clockwise")
-                            }
-                            .buttonStyle(.borderless)
-                            .disabled(healthManager.isLoading)
-                            .accessibilityLabel("Refresh steps")
-                        }
-
-                        if healthManager.isLoading {
-                            ProgressView()
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                        } else {
-                            Text(healthManager.todaySteps.formatted())
-                                .font(.system(size: 44, weight: .bold, design: .rounded))
-                            Text("of \(user.maxFootLoad.formatted()) recommended steps")
-                                .foregroundStyle(.secondary)
-                        }
-
-                        Divider()
-
-                        HStack {
-                            Label(user.condition.title, systemImage: "heart.text.square")
-                            Spacer()
-                            Text("Max \(user.maxFootLoad.formatted())")
-                                .foregroundStyle(.secondary)
-                        }
-                        .font(.subheadline)
-
-                        if let errorMessage = healthManager.errorMessage {
-                            Text(errorMessage)
-                                .font(.footnote)
-                                .foregroundStyle(.red)
-                        }
-                    }
-                    .padding(20)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .background(Color(.secondarySystemBackground))
-                    .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+                    ActivityCard()
                 }
                 .padding()
             }
@@ -104,6 +58,58 @@ struct HomeView: View {
         .task {
             await healthManager.requestAuthorizationAndFetchSteps()
         }
+    }
+
+    private var stepsCard: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                Label("Today Steps", systemImage: "figure.walk")
+                    .font(.headline)
+
+                Spacer()
+
+                Button {
+                    Task {
+                        await healthManager.refreshTodaySteps()
+                    }
+                } label: {
+                    Image(systemName: "arrow.clockwise")
+                }
+                .buttonStyle(.borderless)
+                .disabled(healthManager.isLoading)
+                .accessibilityLabel("Refresh steps")
+            }
+
+            if healthManager.isLoading {
+                ProgressView()
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            } else {
+                Text(healthManager.todaySteps.formatted())
+                    .font(.system(size: 44, weight: .bold, design: .rounded))
+                Text("of \(user.maxFootLoad.formatted()) recommended steps")
+                    .foregroundStyle(.secondary)
+            }
+
+            Divider()
+
+            HStack {
+                Label(user.condition.title, systemImage: "heart.text.square")
+                Spacer()
+                Text("Max \(user.maxFootLoad.formatted())")
+                    .foregroundStyle(.secondary)
+            }
+            .font(.subheadline)
+
+            if let errorMessage = healthManager.errorMessage {
+                Text(errorMessage)
+                    .font(.footnote)
+                    .foregroundStyle(.red)
+            }
+        }
+        .padding(20)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Color(.secondarySystemBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
     }
 }
 

@@ -54,6 +54,7 @@
 		837ACC302FBD9D98004F1B0C /* Exceptions for "Data" folder in "StandWise" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				EventManager.swift,
 				HealthManager.swift,
 				Item.swift,
 				User.swift,
@@ -63,6 +64,7 @@
 		837ACC312FBD9D98004F1B0C /* Exceptions for "Data" folder in "IndicatorExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				EventManager.swift,
 				HealthManager.swift,
 				Item.swift,
 				User.swift,
@@ -72,6 +74,7 @@
 		837ACC342FBD9DC4004F1B0C /* Exceptions for "Feature" folder in "StandWise" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				Home/ActivityCard.swift,
 				Home/HomeView.swift,
 			);
 			target = 837ACB9A2FBC0221004F1B0C /* StandWise */;
@@ -79,6 +82,7 @@
 		837ACC352FBD9DC4004F1B0C /* Exceptions for "Feature" folder in "IndicatorExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				Home/ActivityCard.swift,
 				Home/HomeView.swift,
 			);
 			target = 837ACBF62FBC494E004F1B0C /* IndicatorExtension */;
@@ -433,6 +437,7 @@
 				DEVELOPMENT_TEAM = 4JUFXF99LG;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSCalendarsFullAccessUsageDescription = "Punten Calendar";
 				INFOPLIST_KEY_NSHealthClinicalHealthRecordsShareUsageDescription = Punten;
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "We need access ";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -469,6 +474,7 @@
 				DEVELOPMENT_TEAM = 4JUFXF99LG;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSCalendarsFullAccessUsageDescription = "Punten Calendar";
 				INFOPLIST_KEY_NSHealthClinicalHealthRecordsShareUsageDescription = Punten;
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "We need access ";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
