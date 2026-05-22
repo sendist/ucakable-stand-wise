@@ -14,8 +14,6 @@ struct ContentView: View {
         TabView {
             appTab(title: "Home", icon: "house") {
                 HomeView()
-                    .navigationTitle("Home")
-                    .navigationBarTitleDisplayMode(.inline)
             }
 
             appTab(title: "Stretching", icon: "figure.gymnastics") {
@@ -43,6 +41,6 @@ struct ContentView: View {
     }
 }
 
-#Preview {
+#Preview("Dashboard") {
     ContentView()
 }

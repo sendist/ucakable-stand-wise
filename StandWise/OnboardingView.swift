@@ -5,23 +5,26 @@
 //  Created by Aura Jatra on 22/05/26.
 //
 
-import SwiftUI
 import EventKit
 import HealthKit
+import SwiftUI
 
 struct OnboardingView: View {
     @State private var step: OnboardingStep = .splash
     @State private var isOnboardingCompleted = false
-    @State private var healthStore = HKHealthStore()
-    @State private var eventStore = EKEventStore()
+
+    private let healthStore = HKHealthStore()
+    private let eventStore = EKEventStore()
 
     var body: some View {
-        if isOnboardingCompleted {
-            ContentView()
-        } else {
-            currentStep
-                .animation(.easeInOut(duration: 0.25), value: step)
+        Group {
+            if isOnboardingCompleted {
+                ContentView()
+            } else {
+                currentStep
+            }
         }
+        .animation(.easeInOut(duration: 0.25), value: step)
     }
 
     @ViewBuilder
@@ -71,29 +74,49 @@ struct OnboardingView: View {
     }
 
     private func requestHealthAccess() {
-        Task {
-            if HKHealthStore.isHealthDataAvailable() {
-                do {
-                    try await healthStore.requestAuthorization(toShare: [], read: healthReadTypes)
-                } catch {
-                    print("Health authorization failed: \(error.localizedDescription)")
-                }
+        Task { @MainActor in
+            defer { goToNextStep() }
+
+            guard hasInfoPlistValue(for: "NSHealthShareUsageDescription") else {
+                print("Missing NSHealthShareUsageDescription in the built app Info.plist.")
+                return
             }
 
-            goToNextStep()
+            guard HKHealthStore.isHealthDataAvailable() else {
+                return
+            }
+
+            do {
+                try await healthStore.requestAuthorization(toShare: [], read: healthReadTypes)
+            } catch {
+                print("Health authorization failed: \(error.localizedDescription)")
+            }
         }
     }
 
     private func requestCalendarAccess() {
-        Task {
+        Task { @MainActor in
+            defer { goToNextStep() }
+
+            guard hasInfoPlistValue(for: "NSCalendarsFullAccessUsageDescription") else {
+                print("Missing NSCalendarsFullAccessUsageDescription in the built app Info.plist.")
+                return
+            }
+
             do {
                 _ = try await eventStore.requestFullAccessToEvents()
             } catch {
                 print("Calendar authorization failed: \(error.localizedDescription)")
             }
-
-            goToNextStep()
         }
+    }
+
+    private func hasInfoPlistValue(for key: String) -> Bool {
+        guard let value = Bundle.main.object(forInfoDictionaryKey: key) as? String else {
+            return false
+        }
+
+        return value.isEmpty == false
     }
 
     private var healthReadTypes: Set<HKObjectType> {

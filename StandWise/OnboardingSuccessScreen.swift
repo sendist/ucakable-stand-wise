@@ -16,23 +16,19 @@ struct OnboardingSuccessScreen: View {
         ZStack {
             background
 
-            VStack(spacing: 0) {
+            VStack(spacing: 30) {
                 Spacer(minLength: 28)
 
-                ScrollView(showsIndicators: false) {
-                    VStack(spacing: 30) {
-                        header
-                        activeCard
-                    }
-                    .padding(.horizontal, 24)
-                    .padding(.top, 70)
-                    .padding(.bottom, 24)
-                }
+                header
+                activeCard
+
+                Spacer(minLength: 20)
 
                 actions
-                    .padding(.horizontal, 28)
-                    .padding(.bottom, 20)
+                    .padding(.horizontal, 4)
             }
+            .padding(.horizontal, 24)
+            .padding(.vertical, 20)
         }
     }
 

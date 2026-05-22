@@ -373,12 +373,17 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = StandWise/StandWise.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = K4FP9PXU4K;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSCalendarsFullAccessUsageDescription = "StandWise uses your calendar to understand busy days and plan standing reminders around your schedule.\n";
+				INFOPLIST_KEY_NSCalendarsUsageDescription = "StandWise uses your calendar to understand busy days and plan standing reminders around your schedule.\n";
+				INFOPLIST_KEY_NSHealthClinicalHealthRecordsShareUsageDescription = p;
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "tandWise reads your step count and stand hours to estimate standing time and daily movement.\n";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -389,7 +394,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.ucakable.StandWise;
+				PRODUCT_BUNDLE_IDENTIFIER = com.aurajatra.StandWise;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -407,12 +412,17 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = StandWise/StandWise.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = K4FP9PXU4K;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSCalendarsFullAccessUsageDescription = "StandWise uses your calendar to understand busy days and plan standing reminders around your schedule.\n";
+				INFOPLIST_KEY_NSCalendarsUsageDescription = "StandWise uses your calendar to understand busy days and plan standing reminders around your schedule.\n";
+				INFOPLIST_KEY_NSHealthClinicalHealthRecordsShareUsageDescription = p;
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "tandWise reads your step count and stand hours to estimate standing time and daily movement.\n";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -423,7 +433,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.ucakable.StandWise;
+				PRODUCT_BUNDLE_IDENTIFIER = com.aurajatra.StandWise;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -455,7 +465,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.ucakable.StandWise.Indicator;
+				PRODUCT_BUNDLE_IDENTIFIER = com.aurajatra.StandWise.IndicatorExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
@@ -487,7 +497,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.ucakable.StandWise.Indicator;
+				PRODUCT_BUNDLE_IDENTIFIER = com.aurajatra.StandWise.IndicatorExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
