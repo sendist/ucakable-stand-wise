@@ -15,13 +15,14 @@ struct HomeView: View {
                     .font(.system(size: 48))
                 Text("Hello,")
                     .font(Font.title)
-                Text("Sendi Auraa")
+                Text("Sendi Tan Tan")
                     .font(Font.title.bold())
 
                 Spacer()
             }
             .padding(20)
-            .background(Color(.systemGray6))
+            .background(Color(.red))
+            .cornerRadius(16)
             
         }
     }
