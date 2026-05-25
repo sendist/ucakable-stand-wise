@@ -54,6 +54,16 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		8339B2C12FC3FA7900A5129B /* Feature */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Feature;
+			sourceTree = "<group>";
+		};
+		8339B2D92FC3FA8400A5129B /* Data */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Data;
+			sourceTree = "<group>";
+		};
 		837ACB9D2FBC0221004F1B0C /* StandWise */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = StandWise;
@@ -92,6 +102,8 @@
 		837ACB922FBC0221004F1B0C = {
 			isa = PBXGroup;
 			children = (
+				8339B2D92FC3FA8400A5129B /* Data */,
+				8339B2C12FC3FA7900A5129B /* Feature */,
 				837ACB9D2FBC0221004F1B0C /* StandWise */,
 				837ACBFD2FBC494F004F1B0C /* Indicator */,
 				837ACBF82FBC494E004F1B0C /* Frameworks */,
@@ -135,6 +147,8 @@
 				837ACC0C2FBC4950004F1B0C /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
+				8339B2C12FC3FA7900A5129B /* Feature */,
+				8339B2D92FC3FA8400A5129B /* Data */,
 				837ACB9D2FBC0221004F1B0C /* StandWise */,
 			);
 			name = StandWise;
@@ -157,6 +171,8 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
+				8339B2C12FC3FA7900A5129B /* Feature */,
+				8339B2D92FC3FA8400A5129B /* Data */,
 				837ACBFD2FBC494F004F1B0C /* Indicator */,
 			);
 			name = IndicatorExtension;
@@ -377,7 +393,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = K4FP9PXU4K;
+				DEVELOPMENT_TEAM = 4JUFXF99LG;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSCalendarsFullAccessUsageDescription = "StandWise uses your calendar to understand busy days and plan standing reminders around your schedule.\n";
@@ -394,7 +410,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.aurajatra.StandWise;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ucakable.StandWise;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -416,7 +432,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = K4FP9PXU4K;
+				DEVELOPMENT_TEAM = 4JUFXF99LG;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSCalendarsFullAccessUsageDescription = "StandWise uses your calendar to understand busy days and plan standing reminders around your schedule.\n";
@@ -433,7 +449,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.aurajatra.StandWise;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ucakable.StandWise;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -454,7 +470,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = K4FP9PXU4K;
+				DEVELOPMENT_TEAM = 4JUFXF99LG;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Indicator/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Indicator;
@@ -465,7 +481,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.aurajatra.StandWise.IndicatorExtension;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ucakable.StandWise.IndicatorExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
@@ -486,7 +502,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = K4FP9PXU4K;
+				DEVELOPMENT_TEAM = 4JUFXF99LG;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Indicator/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Indicator;
@@ -497,7 +513,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.aurajatra.StandWise.IndicatorExtension;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ucakable.StandWise.IndicatorExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;

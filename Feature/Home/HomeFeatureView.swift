@@ -8,7 +8,7 @@
 import SwiftData
 import SwiftUI
 
-struct HomeView: View {
+struct HomeFeatureView: View {
     let user: User
 
     @State private var healthManager = HealthManager()
@@ -113,7 +113,7 @@ struct HomeView: View {
     }
 }
 
-struct OnboardingView: View {
+struct OnboardingFeatureView: View {
     @Environment(\.modelContext) private var modelContext
     @State private var selectedCondition: FootCondition = .moderate
     @State private var selectedStandCondition: StandCondition = .moderate
@@ -202,11 +202,11 @@ struct ConditionSelectionButton<T: SelectableCondition>: View {
 }
 
 #Preview("Home") {
-    HomeView(user: User(name: "User", footCondition: .moderate, standCondition: .mild))
+    HomeFeatureView(user: User(name: "User", footCondition: .moderate, standCondition: .mild))
 }
 
 #Preview("Onboarding") {
-    OnboardingView()
+    OnboardingFeatureView()
         .modelContainer(for: User.self, inMemory: true)
 }
 
