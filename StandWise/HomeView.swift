@@ -5,74 +5,50 @@
 //  Created by Aura Jatra on 22/05/26.
 //
 
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 struct HomeView: View {
     let user: User
-    
+
     @State private var isShowingSnooze = false
     @State private var activityItems = ActivityItem.sampleData
     @State private var activityEditor: ActivityEditor?
-    
     @State private var healthManager = HealthManager()
-    
-    private var indicatorColor: Color {
-        let maxSteps = max(user.maxFootLoad, 1)
-        let progress = Double(healthManager.todaySteps) / Double(maxSteps)
 
-        switch progress {
-        case ..<0.7:
-            return .green
-        case ..<1.0:
-            return .yellow
-        default:
-            return .red
-        }
-    }
-    
-    private let brandGreen = Color(.systemGreen)
     private let brandGreen = Color(red: 0.05, green: 0.48, blue: 0.22)
     private let cautionRed = Color(.systemRed)
+    private let cautionYellow = Color(.systemYellow)
+
+    private var stepProgress: Double {
+        Double(healthManager.todaySteps) / Double(max(user.maxFootLoad, 1))
+    }
 
     private var standingTimeText: String {
-        let hours = healthManager.todayStandingMinutes / 60
-        let minutes = healthManager.todayStandingMinutes % 60
+        formattedDuration(minutes: healthManager.todayStandingMinutes)
+    }
 
-        if hours > 0 && minutes > 0 {
-            return "\(hours)h \(minutes)m"
-        } else if hours > 0 {
-            return "\(hours)h"
-        } else {
-            return "\(minutes)m"
-        }
+    private var restTimeText: String {
+        formattedDuration(minutes: max(0, 8 * 60 - healthManager.todayStandingMinutes))
     }
 
     var body: some View {
-        GeometryReader { proxy in
-            ScrollView {
-                VStack(alignment: .leading, spacing: 24) {
-                    profileHeader
-
-                    warningWidget
-
-                    statsSection
-
-                    activitySection
-                    
-                    stepsCard
-                    
-                    ActivityCard()
-                }
-            .background(background)
-                .padding(.top, 16)
-                .padding(.bottom, 28)
+        ScrollView {
+            VStack(alignment: .leading, spacing: 24) {
+                profileHeader
+                statusWidget
+                statsSection
+                activitySection
+                ActivityCard()
             }
-            .background(background)
+            .padding(.horizontal, 24)
+            .padding(.top, 16)
+            .padding(.bottom, 28)
         }
-                .presentationDetents([.height(460)])
+        .background(background)
+        .navigationBarTitleDisplayMode(.inline)
         .toolbar(.hidden, for: .navigationBar)
-                .presentationBackground(Color(.systemGroupedBackground))
+        .sheet(isPresented: $isShowingSnooze) {
             SnoozeView()
                 .presentationDetents([.height(460)])
                 .presentationDragIndicator(.visible)
@@ -84,10 +60,15 @@ struct HomeView: View {
             } onDelete: { deletedActivity in
                 deleteActivity(deletedActivity)
             }
+            .presentationDetents([.medium, .large])
+            .presentationDragIndicator(.visible)
+            .presentationBackground(Color(.systemGroupedBackground))
         }
         .task {
             await healthManager.requestAuthorizationAndFetchTodayMetrics()
         }
+    }
+
     private var background: some View {
         LinearGradient(
             colors: [
@@ -100,11 +81,7 @@ struct HomeView: View {
         )
         .ignoresSafeArea()
     }
-        VStack(alignment: .leading, spacing: 12) {
-            HStack(spacing: 12) {
-        .ignoresSafeArea()
-                    .fill(brandGreen)
-                    .frame(width: 52, height: 52)
+
     private var profileHeader: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack(spacing: 12) {
@@ -123,247 +100,151 @@ struct HomeView: View {
                         .font(.title)
                         .fontWeight(.regular)
 
-                    Text("Peter T")
+                    Text(user.name)
                         .font(.title)
                         .fontWeight(.bold)
                 }
             }
 
-    
-    //INI VARIANT WARNING WIDGET
+            Text("Let's keep your activity in balance today.")
+                .font(.subheadline)
                 .foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
         }
     }
-    
-    //INI VARIANT WARNING WIDGET
-    private var warningWidget: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            HStack(alignment: .firstTextBaseline) {
-                Text("YOUR FEET ARE CURRENTLY")
-                    .font(.caption.weight(.bold))
 
-                Spacer(minLength: 12)
-
-                Text("Mon, May 18")
-                    .font(.caption)
-            }
-            .foregroundStyle(.primary)
-
-            warningBadge
-
-            VStack(alignment: .leading, spacing: 6) {
-                Text("Field event at 3 PM — 2 hours on feet")
-                    .font(.title3.weight(.bold))
-                    .foregroundStyle(cautionRed)
-                    .fixedSize(horizontal: false, vertical: true)
-
-                Text("Rest now to stay within your limit for the rest of the day")
-                    .font(.body)
-                    .foregroundStyle(.primary)
-                    .lineSpacing(2)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
-
-            HStack(spacing: 12) {
-                Button {
-                } label: {
-                    Text("OK")
-                        .font(.subheadline.weight(.semibold))
-                        .padding(.vertical, 6)
-                        .foregroundStyle(.white)
-                        .frame(maxWidth: .infinity)
-                }
-                .buttonStyle(.borderedProminent)
-                .controlSize(.regular)
-                .tint(cautionRed)
-                .clipShape(Capsule())
-
-                Button {
-                    isShowingSnooze = true
-                } label: {
-                    Text("Still Busy")
-                        .font(.subheadline.weight(.semibold))
-                        .padding(.vertical, 6)
-                        .foregroundStyle(.white)
-                        .frame(maxWidth: .infinity)
-                }
-                .buttonStyle(.borderedProminent)
-                .controlSize(.regular)
-                .tint(Color(.systemGray))
-                .clipShape(Capsule())
-        .clipShape(RoundedRectangle(cornerRadius: 44, style: .continuous))
-        .overlay {
-            RoundedRectangle(cornerRadius: 44, style: .continuous)
-                .stroke(.white.opacity(0.85), lineWidth: 1)
+    @ViewBuilder
+    private var statusWidget: some View {
+        if stepProgress >= 1.0 {
+            footStatusWidget(
+                eyebrow: "YOUR FEET ARE CURRENTLY",
+                title: "You have exceeded your safe limit.",
+                message: "Take a short rest now to reduce the risk of a flare-up.",
+                badgeTitle: "WARNING",
+                badgeColor: cautionRed,
+                background: warningBackground,
+                showsActions: true
+            )
+        } else if stepProgress >= 0.7 {
+            footStatusWidget(
+                eyebrow: "YOUR FEET NEED CAUTION",
+                title: "You are getting close to your limit.",
+                message: "Plan your next rest before your schedule gets heavier.",
+                badgeTitle: "CAUTION",
+                badgeColor: cautionYellow,
+                background: cautionBackground,
+                showsActions: true
+            )
+        } else {
+            footStatusWidget(
+                eyebrow: "YOUR FEET ARE SAFE",
+                title: "You are within today's safe range.",
+                message: "Keep balancing movement with recovery throughout the day.",
+                badgeTitle: "SAFE",
+                badgeColor: brandGreen,
+                background: safeBackground,
+                showsActions: false
+            )
         }
-        .shadow(color: .black.opacity(0.10), radius: 10, y: 5)
     }
-    
-    //INI VARIANT CAUTION WIDGET
-    private var cautionWidget: some View {
+
+    private func footStatusWidget<Background: View>(
+        eyebrow: String,
+        title: String,
+        message: String,
+        badgeTitle: String,
+        badgeColor: Color,
+        background: Background,
+        showsActions: Bool
+    ) -> some View {
         VStack(alignment: .leading, spacing: 14) {
             HStack(alignment: .firstTextBaseline) {
-                Text("YOUR FEET ARE CURRENTLY")
+                Text(eyebrow)
                     .font(.caption.weight(.bold))
 
                 Spacer(minLength: 12)
 
-                Text("Mon, May 18")
+                Text(Date.now, format: .dateTime.weekday(.abbreviated).month(.abbreviated).day())
                     .font(.caption)
             }
             .foregroundStyle(.primary)
 
-            cautionBadge
+            statusBadge(title: badgeTitle, color: badgeColor)
 
             VStack(alignment: .leading, spacing: 6) {
-                Text("Field event at 3 PM — 2 hours on feet")
+                Text(title)
                     .font(.title3.weight(.bold))
-                    .foregroundStyle(Color("yellow-1"))
+                    .foregroundStyle(badgeColor)
                     .fixedSize(horizontal: false, vertical: true)
 
-                Text("Rest now to stay within your limit for the rest of the day")
+                Text(message)
                     .font(.body)
                     .foregroundStyle(.primary)
                     .lineSpacing(2)
                     .fixedSize(horizontal: false, vertical: true)
             }
 
-            HStack(spacing: 12) {
-                Button {
-                } label: {
-                    Text("OK")
-                        .font(.subheadline.weight(.semibold))
-                        .padding(.vertical, 6)
-                        .foregroundStyle(.white)
-                        .frame(maxWidth: .infinity)
-                }
-                .buttonStyle(.borderedProminent)
-                .controlSize(.regular)
-                .tint(Color("yellow-2"))
-                .clipShape(Capsule())
-
-                Button {
-                    isShowingSnooze = true
-                } label: {
-                    Text("Still Busy")
-                        .font(.subheadline.weight(.semibold))
-                        .padding(.vertical, 6)
-                        .foregroundStyle(.white)
-                        .frame(maxWidth: .infinity)
-                }
-                .buttonStyle(.borderedProminent)
-                .controlSize(.regular)
-                .tint(Color(.systemGray))
-                .clipShape(Capsule())
+            if showsActions {
+                statusActions(tint: badgeColor)
             }
 
             painLogLink
         }
         .padding(24)
-        .background(cautionBackground)
-        .clipShape(RoundedRectangle(cornerRadius: 44, style: .continuous))
+        .background(background)
+        .clipShape(RoundedRectangle(cornerRadius: 32, style: .continuous))
         .overlay {
-            RoundedRectangle(cornerRadius: 44, style: .continuous)
+            RoundedRectangle(cornerRadius: 32, style: .continuous)
                 .stroke(.white.opacity(0.85), lineWidth: 1)
         }
         .shadow(color: .black.opacity(0.10), radius: 10, y: 5)
     }
 
-    //INI VARIANT SAFE WIDGET
-    private var safeWidget: some View {
-        VStack(alignment: .leading, spacing: 14) {
-            HStack(alignment: .firstTextBaseline) {
-                Text("YOUR FEET ARE SAFE")
-                    .font(.caption.weight(.bold))
-
-                Spacer(minLength: 12)
-
-                Text("Mon, May 18")
-                    .font(.caption)
+    private func statusActions(tint: Color) -> some View {
+        HStack(spacing: 12) {
+            Button {
+            } label: {
+                Text("OK")
+                    .font(.subheadline.weight(.semibold))
+                    .padding(.vertical, 6)
+                    .foregroundStyle(.white)
+                    .frame(maxWidth: .infinity)
             }
-            .foregroundStyle(.primary)
+            .buttonStyle(.borderedProminent)
+            .controlSize(.regular)
+            .tint(tint)
+            .clipShape(Capsule())
 
-            safeBadge
-
-            VStack(alignment: .leading, spacing: 6) {
-                Text("Field event at 3 PM — 2 hours on feet")
-                    .font(.title3.weight(.bold))
-                    .foregroundStyle(Color("green-dark"))
-                    .fixedSize(horizontal: false, vertical: true)
-
-                Text("Rest now to stay within your limit for the rest of the day")
-                    .font(.body)
-                    .foregroundStyle(.primary)
-                    .lineSpacing(2)
-                    .fixedSize(horizontal: false, vertical: true)
+            Button {
+                isShowingSnooze = true
+            } label: {
+                Text("Still Busy")
+                    .font(.subheadline.weight(.semibold))
+                    .padding(.vertical, 6)
+                    .foregroundStyle(.white)
+                    .frame(maxWidth: .infinity)
             }
-
-//            HStack(spacing: 12) {
-//                Button {
-//                } label: {
-//                    Text("OK")
-//                        .font(.subheadline.weight(.semibold))
-//                        .padding(.vertical, 6)
-//                        .foregroundStyle(.white)
-//                        .frame(maxWidth: .infinity)
-//                }
-//                .buttonStyle(.borderedProminent)
-//                .controlSize(.regular)
-//                .tint(Color("yellow-2"))
-//                .clipShape(Capsule())
-//
-//                Button {
-//                    isShowingSnooze = true
-//                } label: {
-//                    Text("Still Busy")
-//                        .font(.subheadline.weight(.semibold))
-//                        .padding(.vertical, 6)
-//                        .foregroundStyle(.white)
-//                        .frame(maxWidth: .infinity)
-//                }
-//                .buttonStyle(.borderedProminent)
-//                .controlSize(.regular)
-//                .tint(Color(.systemGray))
-//                .clipShape(Capsule())
-//            }
-
-            painLogLink
+            .buttonStyle(.borderedProminent)
+            .controlSize(.regular)
+            .tint(Color(.systemGray))
+            .clipShape(Capsule())
         }
-        .padding(24)
-        .background(safeBackground)
-        .clipShape(RoundedRectangle(cornerRadius: 44, style: .continuous))
-
-            RoundedRectangle(cornerRadius: 22, style: .continuous)
-        }
-        .padding(16)
-        .background(warningBackground)
-        .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
-        .overlay {
-            RoundedRectangle(cornerRadius: 22, style: .continuous)
-                .stroke(.white.opacity(0.85), lineWidth: 1)
-        }
-        .shadow(color: .black.opacity(0.10), radius: 10, y: 5)
     }
 
     private var painLogLink: some View {
         VStack(alignment: .leading, spacing: 10) {
             VStack(alignment: .leading, spacing: 3) {
-                Text("Today’s Pain Logs")
+                Text("Today's Pain Logs")
                     .font(.caption.weight(.semibold))
                     .foregroundStyle(.secondary)
 
                 Text("6 entries")
                     .font(.headline.weight(.semibold))
                     .foregroundStyle(.primary)
-                
-                HStack{
-                    Image(systemName: "pencil.line")
-                        .font(.caption.weight(.semibold))
-                    Text("Edit")
-                        .font(.caption.weight(.semibold))
-                }
-                .foregroundStyle(.secondary)
+
+                Label("Edit", systemImage: "pencil.line")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.secondary)
             }
 
             NavigationLink {
@@ -371,7 +252,7 @@ struct HomeView: View {
             } label: {
                 Text("Log Pain")
                     .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(.black)
+                    .foregroundStyle(.primary)
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 10)
                     .padding(.horizontal, 14)
@@ -389,23 +270,22 @@ struct HomeView: View {
         }
     }
 
-    //INI VARIANT WARNING BADGE
-    private var warningBadge: some View {
+    private func statusBadge(title: String, color: Color) -> some View {
         HStack(spacing: 8) {
             ZStack {
                 Circle()
-                    .fill(cautionRed.opacity(0.18))
+                    .fill(color.opacity(0.18))
                     .frame(width: 13, height: 13)
 
                 Circle()
-                    .fill(cautionRed)
+                    .fill(color)
                     .frame(width: 7, height: 7)
-                .foregroundStyle(cautionRed)
+            }
 
-            Text("WARNING")
+            Text(title)
                 .font(.title2)
                 .fontWeight(.heavy)
-                .foregroundStyle(cautionRed)
+                .foregroundStyle(color)
         }
         .padding(.horizontal, 16)
         .frame(height: 44)
@@ -415,15 +295,8 @@ struct HomeView: View {
                 .overlay {
                     Capsule()
                         .stroke(.white.opacity(0.30), lineWidth: 1)
-                        .shadow(
-                            color: Color.black.opacity(0.5),
-                                radius: 4,
-                                x: 0,
-                                y: 4
-                            )
                 }
         )
-        .glassEffect()
     }
 
     private var statsSection: some View {
@@ -436,7 +309,7 @@ struct HomeView: View {
 
             statDivider
 
-            statItem(icon: "sofa.fill", value: "2h 5m", label: "Rest")
+            statItem(icon: "sofa.fill", value: restTimeText, label: "Rest")
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 20)
@@ -487,33 +360,28 @@ struct HomeView: View {
             endPoint: .bottomTrailing
         )
     }
-    
-    //INI VARIANT GRADIENT YELLOW / CAUTION
+
     private var cautionBackground: some View {
         LinearGradient(
             colors: [
-                Color(.white),
-//                Color("WarningGradientMiddle"),
-                Color("yellow-grad-1")
+                Color(.systemBackground),
+                cautionYellow.opacity(0.26)
             ],
             startPoint: .topLeading,
             endPoint: .bottomTrailing
         )
     }
-    
-    //INI VARIANT GRADIENT GREEN / SAFE
+
     private var safeBackground: some View {
         LinearGradient(
             colors: [
-                Color(.white),
-//                Color("WarningGradientMiddle"),
-                Color("green-grad-1")
+                Color(.systemBackground),
+                brandGreen.opacity(0.18)
             ],
             startPoint: .topLeading,
             endPoint: .bottomTrailing
         )
     }
-    
 
     private var activitySection: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -577,57 +445,18 @@ struct HomeView: View {
     private func deleteActivity(_ activity: ActivityItem) {
         activityItems.removeAll { $0.id == activity.id }
     }
-    
-    private var stepsCard: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            HStack {
-                Label("Today Steps", systemImage: "figure.walk")
-                    .font(.headline)
 
-                Spacer()
+    private func formattedDuration(minutes: Int) -> String {
+        let hours = minutes / 60
+        let remainingMinutes = minutes % 60
 
-                Button {
-                    Task {
-                        await healthManager.refreshTodayMetrics()
-                    }
-                } label: {
-                    Image(systemName: "arrow.clockwise")
-                }
-                .buttonStyle(.borderless)
-                .disabled(healthManager.isLoading)
-                .accessibilityLabel("Refresh steps")
-            }
-
-            if healthManager.isLoading {
-                ProgressView()
-                    .frame(maxWidth: .infinity, alignment: .leading)
-            } else {
-                Text(healthManager.todaySteps.formatted())
-                    .font(.system(size: 44, weight: .bold, design: .rounded))
-                Text("of \(user.maxFootLoad.formatted()) recommended steps")
-                    .foregroundStyle(.secondary)
-            }
-
-            Divider()
-
-            HStack {
-                Label(user.condition.title, systemImage: "heart.text.square")
-                Spacer()
-                Text("Max \(user.maxFootLoad.formatted())")
-                    .foregroundStyle(.secondary)
-            }
-            .font(.subheadline)
-
-            if let errorMessage = healthManager.errorMessage {
-                Text(errorMessage)
-                    .font(.footnote)
-                    .foregroundStyle(.red)
-            }
+        if hours > 0 && remainingMinutes > 0 {
+            return "\(hours)h \(remainingMinutes)m"
+        } else if hours > 0 {
+            return "\(hours)h"
+        } else {
+            return "\(remainingMinutes)m"
         }
-        .padding(20)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color(.systemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
     }
 }
 
