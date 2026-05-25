@@ -10,7 +10,7 @@ import SwiftUI
 import WidgetKit
 
 struct IndicatorControl: ControlWidget {
-    static let kind: String = "com.ucakable.StandWise.Indicator"
+    static let kind: String = "com.aurajatra.StandWise.Indicator"
 
     var body: some ControlWidgetConfiguration {
         AppIntentControlConfiguration(
