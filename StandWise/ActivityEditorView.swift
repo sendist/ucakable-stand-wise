@@ -40,6 +40,8 @@ struct ActivityEditorView: View {
 
     @State private var activity: ActivityItem
 
+    private let brandGreen = Color(red: 0.05, green: 0.48, blue: 0.22)
+
     init(
         editor: ActivityEditor,
         onSave: @escaping (ActivityItem) -> Void,
@@ -94,9 +96,10 @@ struct ActivityEditorView: View {
                 }
             }
             .scrollContentBackground(.hidden)
-            .background(Color(.systemGroupedBackground))
+            .background(background)
             .navigationTitle(isNew ? "New Activity" : trimmedTitle)
             .navigationBarTitleDisplayMode(.inline)
+            .tint(brandGreen)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") {
@@ -112,7 +115,20 @@ struct ActivityEditorView: View {
                 }
             }
         }
-        .background(Color(.systemGroupedBackground))
+        .background(background)
+    }
+
+    private var background: some View {
+        LinearGradient(
+            colors: [
+                Color(.systemBackground),
+                Color(.secondarySystemBackground),
+                brandGreen.opacity(0.08)
+            ],
+            startPoint: .top,
+            endPoint: .bottom
+        )
+        .ignoresSafeArea()
     }
 
     private func save() {

@@ -13,98 +13,99 @@ struct SnoozeView: View {
     @State private var selectedMinutes = 14
 
     private let minuteOptions = Array(1...15)
-    private let accentBlue = Color(.systemBlue)
-    private let sheetBackground = Color(.systemGroupedBackground)
+    private let brandGreen = Color(red: 0.05, green: 0.48, blue: 0.22)
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            headerActions
-                .padding(.top, 8)
+        NavigationStack {
+            VStack(alignment: .leading, spacing: 18) {
+                messageSection
 
-            messageSection
-                .padding(.top, 20)
+                infoCard
 
-            infoCard
-                .padding(.top, 28)
+                durationCard
 
-            durationSection
-                .padding(.top, 12)
+                Spacer(minLength: 0)
+            }
+            .padding(.horizontal, 20)
+            .padding(.top, 44)
+            .padding(.bottom, 28)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+            .background(background)
+            .navigationTitle("Snooze")
+            .navigationBarTitleDisplayMode(.inline)
+            .tint(brandGreen)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") {
+                        dismiss()
+                    }
+                }
 
-            saveButton
-                .padding(.top, 18)
-                .padding(.horizontal, 72)
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Save") {
+                        saveDuration()
+                    }
+                    .fontWeight(.semibold)
+                }
+            }
         }
-        .padding(.horizontal, 28)
-        .padding(.bottom, 22)
-        .frame(maxWidth: .infinity, alignment: .top)
-        .background(sheetBackground.ignoresSafeArea(edges: .bottom))
-        .presentationBackground(sheetBackground)
-        .presentationCornerRadius(28)
+        .background(background)
     }
 
-    private var headerActions: some View {
-        HStack {
-            Spacer()
-
-            Button(action: dismiss.callAsFunction) {
-                Image(systemName: "xmark")
-                    .font(.body.weight(.semibold))
-                    .foregroundStyle(.secondary)
-                    .frame(width: 34, height: 34)
-                    .background(Color(.tertiarySystemFill))
-                    .clipShape(Circle())
-            }
-            .buttonStyle(.plain)
-            .accessibilityLabel("Close")
-        }
+    private var background: some View {
+        Color(.systemGroupedBackground)
+            .ignoresSafeArea()
     }
 
     private var messageSection: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text("Okay. We’ll check back soon.")
-                .font(.system(size: 24, weight: .bold))
+                .font(.headline.bold())
                 .foregroundStyle(.primary)
 
             Text("If you can’t sit, try shifting your weight between feet. It reduces load on one heel while standing.")
-                .font(.system(size: 18))
+                .font(.subheadline)
                 .foregroundStyle(.secondary)
-                .lineSpacing(2)
+                .fixedSize(horizontal: false, vertical: true)
         }
-        .fixedSize(horizontal: false, vertical: true)
+        
     }
 
     private var infoCard: some View {
-        HStack(alignment: .top, spacing: 16) {
-            Image(systemName: "info.circle.fill")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-                .padding(.top, 2)
-
+        Label {
             VStack(alignment: .leading, spacing: 3) {
                 Text("Snooze 1 of 3.")
-                Text("We’ll stop ping in after 3 reminders. Widget stays red until you’ve rested.")
+                    .font(.footnote.weight(.semibold))
+                Text("We’ll stop pinging after 3 reminders. Widget stays red until you’ve rested.")
+                    .font(.footnote)
             }
-            .font(.footnote)
-            .foregroundStyle(Color(.darkGray))
+            .foregroundStyle(.secondary)
             .fixedSize(horizontal: false, vertical: true)
+        } icon: {
+            ZStack {
+                Circle()
+                    .fill(brandGreen)
+                    .frame(width: 18, height: 18)
+
+                Text("i")
+                    .font(.caption2.weight(.bold))
+                    .foregroundStyle(.white)
+            }
+            .accessibilityHidden(true)
         }
-        .padding(16)
+        .padding(.vertical, 12)
+        .padding(.horizontal, 16)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color(.secondarySystemGroupedBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
-        .overlay {
-            RoundedRectangle(cornerRadius: 16, style: .continuous)
-                .stroke(Color(.separator).opacity(0.35), lineWidth: 1)
-        }
+        .background(Color(.secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 16, style: .continuous))
     }
 
-    private var durationSection: some View {
+    private var durationCard: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text("Confirm Snooze Duration")
-                .font(.system(size: 21, weight: .semibold))
-                .foregroundStyle(Color(.systemGray))
+            Text("Snooze Duration")
+                .font(.headline.bold())
+                .foregroundStyle(.primary)
 
-            Picker("Confirm Snooze Duration", selection: $selectedMinutes) {
+            Picker("Duration", selection: $selectedMinutes) {
                 ForEach(minuteOptions, id: \.self) { minute in
                     Text("\(minute) minutes")
                         .tag(minute)
@@ -112,25 +113,12 @@ struct SnoozeView: View {
             }
             .pickerStyle(.wheel)
             .labelsHidden()
-            .frame(height: 136)
+            .frame(height: 124)
             .frame(maxWidth: .infinity)
-            .background(Color(.systemBackground))
-            .clipShape(RoundedRectangle(cornerRadius: 28, style: .continuous))
         }
-    }
-
-    private var saveButton: some View {
-        Button(action: saveDuration) {
-            Text("Save Duration")
-                .font(.system(size: 21, weight: .semibold))
-                .foregroundStyle(.white)
-                .frame(maxWidth: .infinity)
-                .frame(height: 56)
-                .background(accentBlue)
-                .clipShape(Capsule())
-                .shadow(color: accentBlue.opacity(0.28), radius: 20, y: 10)
-        }
-        .buttonStyle(.plain)
+        .padding(16)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Color(.secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 20, style: .continuous))
     }
 
     private func saveDuration() {
@@ -139,11 +127,5 @@ struct SnoozeView: View {
 }
 
 #Preview("snooze") {
-    ZStack(alignment: .bottom) {
-        Color(.systemGray4)
-            .ignoresSafeArea()
-
-        SnoozeView()
-            .clipShape(.rect(topLeadingRadius: 36, topTrailingRadius: 36))
-    }
+    SnoozeView()
 }

@@ -14,10 +14,11 @@ struct PainLogView: View {
 
     private let painLocations = ["Heel", "Arch", "Ball of Foot", "Toes"]
     private let contextOptions = ["Just started", "Been hurting a while", "After sitting down"]
+    private let brandGreen = Color(red: 0.05, green: 0.48, blue: 0.22)
 
     var body: some View {
-        ScrollView(showsIndicators: false) {
-            VStack(alignment: .leading, spacing: 28) {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 24) {
                 header
                 painLocationSection
                 severitySection
@@ -25,38 +26,53 @@ struct PainLogView: View {
                 infoBox
                 saveButton
             }
-            .padding(.horizontal, 24)
-            .padding(.top, 18)
-            .padding(.bottom, 32)
+            .padding(.horizontal, 20)
+            .padding(.top, 16)
+            .padding(.bottom, 28)
         }
-        .background(Color(.systemBackground))
+        .background(background)
         .navigationTitle("Pain Log")
         .navigationBarTitleDisplayMode(.inline)
+        .tint(brandGreen)
+    }
+
+    private var background: some View {
+        LinearGradient(
+            colors: [
+                Color(.systemBackground),
+                Color(.secondarySystemBackground),
+                brandGreen.opacity(0.08)
+            ],
+            startPoint: .top,
+            endPoint: .bottom
+        )
+        .ignoresSafeArea()
     }
 
     private var header: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text("Foot Pain Log")
-                .font(.largeTitle.bold())
+                .font(.title.bold())
                 .foregroundStyle(.primary)
                 .fixedSize(horizontal: false, vertical: true)
 
             Text("Log your foot pain. The more honest, the smarter the app gets.")
-                .font(.body)
+                .font(.subheadline)
                 .foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
         }
     }
 
     private var painLocationSection: some View {
-        VStack(alignment: .leading, spacing: 14) {
-            sectionTitle("Where does it hurts?")
+        VStack(alignment: .leading, spacing: 12) {
+            sectionTitle("Where does it hurt?")
 
             FlowLayout(horizontalSpacing: 10, verticalSpacing: 12) {
                 ForEach(painLocations, id: \.self) { location in
                     SelectableChip(
                         title: location,
-                        isSelected: selectedLocation == location
+                        isSelected: selectedLocation == location,
+                        tint: brandGreen
                     ) {
                         selectedLocation = location
                     }
@@ -67,15 +83,15 @@ struct PainLogView: View {
     }
 
     private var severitySection: some View {
-        VStack(alignment: .leading, spacing: 14) {
+        VStack(alignment: .leading, spacing: 12) {
             sectionTitle("Pain Severity")
 
-            SeveritySelector(selectedSeverity: $selectedSeverity)
+            SeveritySelector(selectedSeverity: $selectedSeverity, tint: brandGreen)
         }
     }
 
     private var contextSection: some View {
-        VStack(alignment: .leading, spacing: 14) {
+        VStack(alignment: .leading, spacing: 12) {
             sectionTitle("Context (Optional)")
 
             VStack(spacing: 10) {
@@ -83,7 +99,8 @@ struct PainLogView: View {
                     SelectableChip(
                         title: option,
                         isSelected: selectedContexts.contains(option),
-                        fillsWidth: true
+                        fillsWidth: true,
+                        tint: brandGreen
                     ) {
                         toggleContext(option)
                     }
@@ -96,17 +113,21 @@ struct PainLogView: View {
         HStack(alignment: .top, spacing: 12) {
             Image(systemName: "info.circle.fill")
                 .font(.subheadline)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(brandGreen)
                 .padding(.top, 2)
 
             Text("Past 4h: 5,200 steps • 3.5h standing • 1 heavy event (Site Visit, 2 PM). Likely trigger: prolonged standing.")
                 .font(.footnote)
-                .foregroundStyle(Color(.darkGray))
+                .foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
         }
-        .padding(16)
+        .padding(14)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color(.secondarySystemBackground), in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+        .overlay {
+            RoundedRectangle(cornerRadius: 16, style: .continuous)
+                .strokeBorder(Color.primary.opacity(0.06), lineWidth: 1)
+        }
     }
 
     private var saveButton: some View {
@@ -114,14 +135,11 @@ struct PainLogView: View {
             // Presentation only. Persistence will be added with reminder logic later.
         } label: {
             Text("Save Pain Log")
-                .font(.headline.bold())
-                .foregroundStyle(.white)
                 .frame(maxWidth: .infinity)
-                .padding(.vertical, 17)
         }
-        .background(Color.blue, in: Capsule())
-        .shadow(color: Color.blue.opacity(0.22), radius: 12, x: 0, y: 6)
-        .buttonStyle(.plain)
+        .buttonStyle(.borderedProminent)
+        .controlSize(.large)
+        .tint(brandGreen)
     }
 
     private func sectionTitle(_ title: String) -> some View {
@@ -143,6 +161,7 @@ private struct SelectableChip: View {
     let title: String
     let isSelected: Bool
     var fillsWidth = false
+    let tint: Color
     let action: () -> Void
 
     var body: some View {
@@ -164,24 +183,25 @@ private struct SelectableChip: View {
                         .accessibilityHidden(true)
                 }
             }
-            .padding(.horizontal, 18)
-            .padding(.vertical, 13)
+            .padding(.horizontal, 16)
+            .padding(.vertical, 11)
             .frame(maxWidth: fillsWidth ? .infinity : nil, alignment: .leading)
+            .frame(minHeight: 44)
             .background(chipBackground, in: RoundedRectangle(cornerRadius: 24, style: .continuous))
             .overlay(chipBorder)
-            .shadow(color: isSelected ? Color.blue.opacity(0.18) : Color.black.opacity(0.04), radius: 8, x: 0, y: 3)
+            .shadow(color: isSelected ? tint.opacity(0.18) : Color.black.opacity(0.04), radius: 8, x: 0, y: 3)
         }
         .buttonStyle(.plain)
         .accessibilityAddTraits(isSelected ? .isSelected : [])
     }
 
     private var chipBackground: some ShapeStyle {
-        isSelected ? Color.blue : Color(.systemBackground)
+        isSelected ? tint : Color(.systemBackground)
     }
 
     private var chipBorder: some View {
         RoundedRectangle(cornerRadius: 24, style: .continuous)
-            .strokeBorder(isSelected ? Color.blue : Color(.separator).opacity(0.35), lineWidth: 1)
+            .strokeBorder(isSelected ? tint : Color(.separator).opacity(0.35), lineWidth: 1)
     }
 }
 
@@ -245,6 +265,7 @@ private struct FlowLayout: Layout {
 
 private struct SeveritySelector: View {
     @Binding var selectedSeverity: Int
+    let tint: Color
 
     private let options = [
         SeverityOption(value: 1, label: "Barely"),
@@ -270,7 +291,7 @@ private struct SeveritySelector: View {
                     }
                     .foregroundStyle(selectedSeverity == option.value ? .white : .primary)
                     .frame(maxWidth: .infinity)
-                    .frame(height: 64)
+                    .frame(height: 56)
                     .background(background(for: option), in: RoundedRectangle(cornerRadius: 18, style: .continuous))
                     .overlay(border(for: option))
                 }
@@ -280,16 +301,20 @@ private struct SeveritySelector: View {
             }
         }
         .padding(6)
-        .background(Color(.secondarySystemBackground), in: RoundedRectangle(cornerRadius: 22, style: .continuous))
+        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 22, style: .continuous))
+        .overlay {
+            RoundedRectangle(cornerRadius: 22, style: .continuous)
+                .strokeBorder(Color.primary.opacity(0.06), lineWidth: 1)
+        }
     }
 
     private func background(for option: SeverityOption) -> Color {
-        selectedSeverity == option.value ? .blue : Color(.systemBackground)
+        selectedSeverity == option.value ? tint : Color(.systemBackground)
     }
 
     private func border(for option: SeverityOption) -> some View {
         RoundedRectangle(cornerRadius: 18, style: .continuous)
-            .strokeBorder(selectedSeverity == option.value ? Color.blue : Color.clear, lineWidth: 1)
+            .strokeBorder(selectedSeverity == option.value ? tint : Color.clear, lineWidth: 1)
     }
 }
 

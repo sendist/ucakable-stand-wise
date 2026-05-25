@@ -21,7 +21,7 @@ struct PlantarSurveyScreen: View {
             background
 
             ScrollView(showsIndicators: false) {
-                VStack(alignment: .leading, spacing: 24) {
+                VStack(alignment: .leading, spacing: 22) {
                     header
 
                     SurveyOptionCard(
@@ -44,13 +44,13 @@ struct PlantarSurveyScreen: View {
                         tint: brandGreen
                     )
                 }
-                .padding(.horizontal, 24)
-                .padding(.top, 20)
-                .padding(.bottom, 88)
+                .padding(.horizontal, 20)
+                .padding(.top, 16)
+                .padding(.bottom, 84)
             }
             .safeAreaInset(edge: .bottom, spacing: 0) {
                 actions
-                    .padding(.horizontal, 24)
+                    .padding(.horizontal, 20)
                     .padding(.bottom, 8)
                     .background(.clear)
             }
@@ -165,9 +165,9 @@ private struct SurveyOptionCard: View {
             }
         }
         .padding(.vertical, 8)
-        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 22, style: .continuous))
+        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 20, style: .continuous))
         .overlay {
-            RoundedRectangle(cornerRadius: 22, style: .continuous)
+            RoundedRectangle(cornerRadius: 20, style: .continuous)
                 .strokeBorder(Color.primary.opacity(0.06), lineWidth: 1)
         }
     }

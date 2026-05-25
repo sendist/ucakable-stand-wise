@@ -16,19 +16,19 @@ struct OnboardingSuccessScreen: View {
         ZStack {
             background
 
-            VStack(spacing: 30) {
-                Spacer(minLength: 28)
+            VStack(spacing: 24) {
+                Spacer(minLength: 20)
 
                 header
                 activeCard
 
-                Spacer(minLength: 20)
+                Spacer(minLength: 16)
 
                 actions
                     .padding(.horizontal, 4)
             }
             .padding(.horizontal, 24)
-            .padding(.vertical, 20)
+            .padding(.vertical, 16)
         }
     }
 
@@ -46,7 +46,7 @@ struct OnboardingSuccessScreen: View {
     }
 
     private var header: some View {
-        VStack(spacing: 28) {
+        VStack(spacing: 24) {
             ZStack {
                 RoundedRectangle(cornerRadius: 34, style: .continuous)
                     .fill(brandGreen.gradient)
@@ -57,10 +57,10 @@ struct OnboardingSuccessScreen: View {
                     .foregroundStyle(Color.green)
                     .accessibilityHidden(true)
             }
-            .frame(width: 130, height: 130)
+            .frame(width: 120, height: 120)
             .accessibilityLabel("Setup complete")
 
-            VStack(spacing: 12) {
+            VStack(spacing: 8) {
                 Text("You're all set.")
                     .font(.title.bold())
                     .multilineTextAlignment(.center)
@@ -110,11 +110,11 @@ struct OnboardingSuccessScreen: View {
                 )
             }
         }
-        .padding(.horizontal, 20)
-        .padding(.vertical, 18)
-        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 22, style: .continuous))
+        .padding(.horizontal, 16)
+        .padding(.vertical, 16)
+        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 20, style: .continuous))
         .overlay {
-            RoundedRectangle(cornerRadius: 22, style: .continuous)
+            RoundedRectangle(cornerRadius: 20, style: .continuous)
                 .strokeBorder(Color.primary.opacity(0.06), lineWidth: 1)
         }
     }
