@@ -15,12 +15,14 @@ struct HomeView: View {
     private let brandGreen = Color(.systemGreen)
     private let cautionRed = Color(.systemRed)
 
+    
+    // INI MAIN VIEW
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 28) {
                 profileHeader
 
-                warningWidget
+                safeWidget
 
                 statsSection
 
@@ -50,6 +52,7 @@ struct HomeView: View {
         }
     }
 
+    //INI VARIANT HEADER
     private var profileHeader: some View {
         VStack(alignment: .leading, spacing: 14) {
             HStack(spacing: 14) {
@@ -65,11 +68,11 @@ struct HomeView: View {
 
                 HStack(spacing: 0) {
                     Text("Hello, ")
-                        .font(.largeTitle)
+                        .font(.title)
                         .fontWeight(.regular)
 
                     Text("Peter T")
-                        .font(.largeTitle)
+                        .font(.title)
                         .fontWeight(.bold)
                 }
             }
@@ -80,8 +83,79 @@ struct HomeView: View {
                 .fixedSize(horizontal: false, vertical: true)
         }
     }
-
+    
+    //INI VARIANT WARNING WIDGET
     private var warningWidget: some View {
+        VStack(alignment: .leading, spacing: 14) {
+            HStack(alignment: .firstTextBaseline) {
+                Text("YOUR FEET ARE CURRENTLY")
+                    .font(.caption.weight(.bold))
+
+                Spacer(minLength: 12)
+
+                Text("Mon, May 18")
+                    .font(.caption)
+            }
+            .foregroundStyle(.primary)
+
+            warningBadge
+
+            VStack(alignment: .leading, spacing: 6) {
+                Text("Field event at 3 PM — 2 hours on feet")
+                    .font(.title3.weight(.bold))
+                    .foregroundStyle(cautionRed)
+                    .fixedSize(horizontal: false, vertical: true)
+
+                Text("Rest now to stay within your limit for the rest of the day")
+                    .font(.body)
+                    .foregroundStyle(.primary)
+                    .lineSpacing(2)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+
+            HStack(spacing: 12) {
+                Button {
+                } label: {
+                    Text("OK")
+                        .font(.subheadline.weight(.semibold))
+                        .padding(.vertical, 6)
+                        .foregroundStyle(.white)
+                        .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.borderedProminent)
+                .controlSize(.regular)
+                .tint(cautionRed)
+                .clipShape(Capsule())
+
+                Button {
+                    isShowingSnooze = true
+                } label: {
+                    Text("Still Busy")
+                        .font(.subheadline.weight(.semibold))
+                        .padding(.vertical, 6)
+                        .foregroundStyle(.white)
+                        .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.borderedProminent)
+                .controlSize(.regular)
+                .tint(Color(.systemGray))
+                .clipShape(Capsule())
+            }
+
+            painLogLink
+        }
+        .padding(24)
+        .background(warningBackground)
+        .clipShape(RoundedRectangle(cornerRadius: 44, style: .continuous))
+        .overlay {
+            RoundedRectangle(cornerRadius: 44, style: .continuous)
+                .stroke(.white.opacity(0.85), lineWidth: 1)
+        }
+        .shadow(color: .black.opacity(0.10), radius: 10, y: 5)
+    }
+    
+    //INI VARIANT CAUTION WIDGET
+    private var cautionWidget: some View {
         VStack(alignment: .leading, spacing: 14) {
             HStack(alignment: .firstTextBaseline) {
                 Text("YOUR FEET ARE CURRENTLY")
@@ -97,13 +171,13 @@ struct HomeView: View {
             cautionBadge
 
             VStack(alignment: .leading, spacing: 6) {
-                Text("You’ve exceeded your safe limit.")
-                    .font(.headline.weight(.bold))
-                    .foregroundStyle(cautionRed)
+                Text("Field event at 3 PM — 2 hours on feet")
+                    .font(.title3.weight(.bold))
+                    .foregroundStyle(Color("yellow-1"))
                     .fixedSize(horizontal: false, vertical: true)
 
-                Text("10 minutes of rest now is worth far more than days of recovery. Find a seat and do simple exercise now!")
-                    .font(.callout)
+                Text("Rest now to stay within your limit for the rest of the day")
+                    .font(.body)
                     .foregroundStyle(.primary)
                     .lineSpacing(2)
                     .fixedSize(horizontal: false, vertical: true)
@@ -114,12 +188,13 @@ struct HomeView: View {
                 } label: {
                     Text("OK")
                         .font(.subheadline.weight(.semibold))
+                        .padding(.vertical, 6)
                         .foregroundStyle(.white)
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(.borderedProminent)
                 .controlSize(.regular)
-                .tint(cautionRed)
+                .tint(Color("yellow-2"))
                 .clipShape(Capsule())
 
                 Button {
@@ -127,6 +202,7 @@ struct HomeView: View {
                 } label: {
                     Text("Still Busy")
                         .font(.subheadline.weight(.semibold))
+                        .padding(.vertical, 6)
                         .foregroundStyle(.white)
                         .frame(maxWidth: .infinity)
                 }
@@ -138,16 +214,87 @@ struct HomeView: View {
 
             painLogLink
         }
-        .padding(18)
-        .background(warningBackground)
-        .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
+        .padding(24)
+        .background(cautionBackground)
+        .clipShape(RoundedRectangle(cornerRadius: 44, style: .continuous))
         .overlay {
-            RoundedRectangle(cornerRadius: 24, style: .continuous)
+            RoundedRectangle(cornerRadius: 44, style: .continuous)
                 .stroke(.white.opacity(0.85), lineWidth: 1)
         }
         .shadow(color: .black.opacity(0.10), radius: 10, y: 5)
     }
 
+    //INI VARIANT SAFE WIDGET
+    private var safeWidget: some View {
+        VStack(alignment: .leading, spacing: 14) {
+            HStack(alignment: .firstTextBaseline) {
+                Text("YOUR FEET ARE SAFE")
+                    .font(.caption.weight(.bold))
+
+                Spacer(minLength: 12)
+
+                Text("Mon, May 18")
+                    .font(.caption)
+            }
+            .foregroundStyle(.primary)
+
+            safeBadge
+
+            VStack(alignment: .leading, spacing: 6) {
+                Text("Field event at 3 PM — 2 hours on feet")
+                    .font(.title3.weight(.bold))
+                    .foregroundStyle(Color("green-dark"))
+                    .fixedSize(horizontal: false, vertical: true)
+
+                Text("Rest now to stay within your limit for the rest of the day")
+                    .font(.body)
+                    .foregroundStyle(.primary)
+                    .lineSpacing(2)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+
+//            HStack(spacing: 12) {
+//                Button {
+//                } label: {
+//                    Text("OK")
+//                        .font(.subheadline.weight(.semibold))
+//                        .padding(.vertical, 6)
+//                        .foregroundStyle(.white)
+//                        .frame(maxWidth: .infinity)
+//                }
+//                .buttonStyle(.borderedProminent)
+//                .controlSize(.regular)
+//                .tint(Color("yellow-2"))
+//                .clipShape(Capsule())
+//
+//                Button {
+//                    isShowingSnooze = true
+//                } label: {
+//                    Text("Still Busy")
+//                        .font(.subheadline.weight(.semibold))
+//                        .padding(.vertical, 6)
+//                        .foregroundStyle(.white)
+//                        .frame(maxWidth: .infinity)
+//                }
+//                .buttonStyle(.borderedProminent)
+//                .controlSize(.regular)
+//                .tint(Color(.systemGray))
+//                .clipShape(Capsule())
+//            }
+
+            painLogLink
+        }
+        .padding(24)
+        .background(safeBackground)
+        .clipShape(RoundedRectangle(cornerRadius: 44, style: .continuous))
+        .overlay {
+            RoundedRectangle(cornerRadius: 44, style: .continuous)
+                .stroke(.white.opacity(0.85), lineWidth: 1)
+        }
+        .shadow(color: .black.opacity(0.10), radius: 10, y: 5)
+    }
+    
+    //INI VARIANT PAIN LOG SECTION
     private var painLogLink: some View {
         VStack(alignment: .leading, spacing: 10) {
             VStack(alignment: .leading, spacing: 3) {
@@ -158,6 +305,14 @@ struct HomeView: View {
                 Text("6 entries")
                     .font(.headline.weight(.semibold))
                     .foregroundStyle(.primary)
+                
+                HStack{
+                    Image(systemName: "pencil.line")
+                        .font(.caption.weight(.semibold))
+                    Text("Edit")
+                        .font(.caption.weight(.semibold))
+                }
+                .foregroundStyle(.secondary)
             }
 
             NavigationLink {
@@ -165,7 +320,7 @@ struct HomeView: View {
             } label: {
                 Text("Log Pain")
                     .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(cautionRed)
+                    .foregroundStyle(.black)
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 10)
                     .padding(.horizontal, 14)
@@ -176,14 +331,15 @@ struct HomeView: View {
             .accessibilityHint("Open pain log")
         }
         .padding(12)
-        .background(.thinMaterial, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+        .background(.thinMaterial, in: RoundedRectangle(cornerRadius: 24, style: .continuous))
         .overlay {
-            RoundedRectangle(cornerRadius: 18, style: .continuous)
+            RoundedRectangle(cornerRadius: 24, style: .continuous)
                 .stroke(.white.opacity(0.28), lineWidth: 1)
         }
     }
 
-    private var cautionBadge: some View {
+    //INI VARIANT WARNING BADGE
+    private var warningBadge: some View {
         HStack(spacing: 8) {
             ZStack {
                 Circle()
@@ -198,18 +354,100 @@ struct HomeView: View {
             Text("WARNING")
                 .font(.title2)
                 .fontWeight(.heavy)
-                .foregroundStyle(cautionRed)
+                .foregroundStyle(.black)
         }
         .padding(.horizontal, 18)
         .frame(height: 48)
         .background(
             Capsule()
-                .fill(Color.white.opacity(0.25))
+                .fill(Color.white.opacity(0.5))
                 .overlay {
                     Capsule()
                         .stroke(.white.opacity(0.30), lineWidth: 1)
+                        .shadow(
+                            color: Color.black.opacity(0.5),
+                                radius: 4,
+                                x: 0,
+                                y: 4
+                            )
                 }
         )
+        .glassEffect()
+    }
+    
+    //INI VARIANT CAUTION BADGE
+    private var cautionBadge: some View {
+        HStack(spacing: 8) {
+            ZStack {
+                Circle()
+                    .fill(Color("yellow-1").opacity(0.35))
+                    .frame(width: 13, height: 13)
+
+                Circle()
+                    .fill(Color("yellow-1"))
+                    .frame(width: 7, height: 7)
+            }
+
+            Text("CAUTION")
+                .font(.title2)
+                .fontWeight(.heavy)
+                .foregroundStyle(.black)
+        }
+        .padding(.horizontal, 18)
+        .frame(height: 48)
+        .background(
+            Capsule()
+                .fill(Color.white.opacity(0.5))
+                .overlay {
+                    Capsule()
+                        .stroke(.white.opacity(0.30), lineWidth: 1)
+                        .shadow(
+                            color: Color.black.opacity(0.5),
+                                radius: 4,
+                                x: 0,
+                                y: 4
+                            )
+                }
+        )
+        .glassEffect()
+    }
+    
+    
+    //INI VARIANT SAFE BADGE
+    private var safeBadge: some View {
+        HStack(spacing: 8) {
+            ZStack {
+                Circle()
+                    .fill(Color("green-1").opacity(0.35))
+                    .frame(width: 13, height: 13)
+
+                Circle()
+                    .fill(Color("green-1"))
+                    .frame(width: 7, height: 7)
+            }
+
+            Text("SAFE")
+                .font(.title2)
+                .fontWeight(.heavy)
+                .foregroundStyle(.black)
+        }
+        .padding(.horizontal, 18)
+        .frame(height: 48)
+        .background(
+            Capsule()
+                .fill(Color.white.opacity(0.5))
+                .overlay {
+                    Capsule()
+                        .stroke(.white.opacity(0.30), lineWidth: 1)
+                        .shadow(
+                            color: Color.black.opacity(0.5),
+                                radius: 4,
+                                x: 0,
+                                y: 4
+                            )
+                }
+        )
+        .glassEffect()
     }
 
     private var statsSection: some View {
@@ -269,6 +507,33 @@ struct HomeView: View {
             endPoint: .bottomTrailing
         )
     }
+    
+    //INI VARIANT GRADIENT YELLOW / CAUTION
+    private var cautionBackground: some View {
+        LinearGradient(
+            colors: [
+                Color(.white),
+//                Color("WarningGradientMiddle"),
+                Color("yellow-grad-1")
+            ],
+            startPoint: .topLeading,
+            endPoint: .bottomTrailing
+        )
+    }
+    
+    //INI VARIANT GRADIENT GREEN / SAFE
+    private var safeBackground: some View {
+        LinearGradient(
+            colors: [
+                Color(.white),
+//                Color("WarningGradientMiddle"),
+                Color("green-grad-1")
+            ],
+            startPoint: .topLeading,
+            endPoint: .bottomTrailing
+        )
+    }
+    
 
     private var activitySection: some View {
         VStack(alignment: .leading, spacing: 14) {
