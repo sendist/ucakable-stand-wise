@@ -8,7 +8,7 @@
 import SwiftData
 import SwiftUI
 
-struct HomeView: View {
+struct HomeFeatureView: View {
     let user: User
 
     @State private var healthManager = HealthManager()
@@ -24,6 +24,19 @@ struct HomeView: View {
             return .yellow
         default:
             return .red
+        }
+    }
+
+    private var standingTimeText: String {
+        let hours = healthManager.todayStandingMinutes / 60
+        let minutes = healthManager.todayStandingMinutes % 60
+
+        if hours > 0 && minutes > 0 {
+            return "\(hours)h \(minutes)m"
+        } else if hours > 0 {
+            return "\(hours)h"
+        } else {
+            return "\(minutes)m"
         }
     }
 
@@ -56,7 +69,7 @@ struct HomeView: View {
             .navigationTitle("StandWise")
         }
         .task {
-            await healthManager.requestAuthorizationAndFetchSteps()
+            await healthManager.requestAuthorizationAndFetchTodayMetrics()
         }
     }
 
@@ -70,7 +83,7 @@ struct HomeView: View {
 
                 Button {
                     Task {
-                        await healthManager.refreshTodaySteps()
+                        await healthManager.refreshTodayMetrics()
                     }
                 } label: {
                     Image(systemName: "arrow.clockwise")
@@ -100,6 +113,14 @@ struct HomeView: View {
             }
             .font(.subheadline)
 
+            HStack {
+                Label("Standing", systemImage: "figure.stand")
+                Spacer()
+                Text(standingTimeText)
+                    .foregroundStyle(.secondary)
+            }
+            .font(.subheadline)
+
             if let errorMessage = healthManager.errorMessage {
                 Text(errorMessage)
                     .font(.footnote)
@@ -113,7 +134,7 @@ struct HomeView: View {
     }
 }
 
-struct OnboardingView: View {
+struct OnboardingFeatureView: View {
     @Environment(\.modelContext) private var modelContext
     @State private var selectedCondition: FootCondition = .moderate
     @State private var selectedStandCondition: StandCondition = .moderate
@@ -202,11 +223,11 @@ struct ConditionSelectionButton<T: SelectableCondition>: View {
 }
 
 #Preview("Home") {
-    HomeView(user: User(name: "User", footCondition: .moderate, standCondition: .mild))
+    HomeFeatureView(user: User(name: "User", footCondition: .moderate, standCondition: .mild))
 }
 
 #Preview("Onboarding") {
-    OnboardingView()
+    OnboardingFeatureView()
         .modelContainer(for: User.self, inMemory: true)
 }
 

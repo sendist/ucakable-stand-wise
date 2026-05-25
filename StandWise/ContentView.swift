@@ -6,14 +6,21 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct ContentView: View {
+    @Query(sort: \User.createdAt) private var users: [User]
     private let brandGreen = Color(red: 0.05, green: 0.48, blue: 0.22)
 
     var body: some View {
         TabView {
             appTab(title: "Home", icon: "house") {
-                HomeView()
+                if let user = users.first {
+                    HomeView(user: user)
+                } else {
+                    ProgressView("Preparing dashboard...")
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                }
             }
 
             appTab(title: "Stretching", icon: "figure.gymnastics") {
@@ -41,6 +48,18 @@ struct ContentView: View {
     }
 }
 
+//#Preview("Dashboard") {
+//    ContentView()
+//}
 #Preview("Dashboard") {
-    ContentView()
+    let container = try! ModelContainer(
+        for: Item.self,
+        User.self,
+        configurations: ModelConfiguration(isStoredInMemoryOnly: true)
+    )
+    let user = User(name: "User", footCondition: .moderate, standCondition: .mild)
+    container.mainContext.insert(user)
+
+    return ContentView()
+        .modelContainer(container)
 }

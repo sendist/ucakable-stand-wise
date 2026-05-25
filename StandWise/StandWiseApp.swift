@@ -6,12 +6,14 @@
 //
 
 import SwiftUI
+import SwiftData
 
 @main
 struct StandWiseApp: App {
     var body: some Scene {
         WindowGroup {
             OnboardingView()
+                .modelContainer(for: [Item.self, User.self])
         }
     }
 }

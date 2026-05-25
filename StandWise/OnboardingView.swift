@@ -8,8 +8,13 @@
 import EventKit
 import HealthKit
 import SwiftUI
+import SwiftData
 
 struct OnboardingView: View {
+    @Environment(\.modelContext) private var modelContext
+    @Query(sort: \User.createdAt) private var users: [User]
+
+    @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding = false
     @State private var step: OnboardingStep = .splash
     @State private var isOnboardingCompleted = false
 
@@ -18,7 +23,7 @@ struct OnboardingView: View {
 
     var body: some View {
         Group {
-            if isOnboardingCompleted {
+            if hasCompletedOnboarding || isOnboardingCompleted {
                 ContentView()
             } else {
                 currentStep
@@ -70,7 +75,24 @@ struct OnboardingView: View {
     }
 
     private func completeOnboarding() {
+        createDefaultUserIfNeeded()
+        hasCompletedOnboarding = true
         isOnboardingCompleted = true
+    }
+
+    private func createDefaultUserIfNeeded() {
+        guard users.isEmpty else {
+            return
+        }
+
+        let user = User(name: "User", footCondition: .moderate, standCondition: .moderate)
+        modelContext.insert(user)
+
+        do {
+            try modelContext.save()
+        } catch {
+            print("Failed to save onboarding user: \(error.localizedDescription)")
+        }
     }
 
     private func requestHealthAccess() {

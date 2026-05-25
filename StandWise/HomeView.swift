@@ -6,14 +6,46 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct HomeView: View {
+    let user: User
+    
     @State private var isShowingSnooze = false
     @State private var activityItems = ActivityItem.sampleData
     @State private var activityEditor: ActivityEditor?
+    
+    @State private var healthManager = HealthManager()
+    
+    private var indicatorColor: Color {
+        let maxSteps = max(user.maxFootLoad, 1)
+        let progress = Double(healthManager.todaySteps) / Double(maxSteps)
 
+        switch progress {
+        case ..<0.7:
+            return .green
+        case ..<1.0:
+            return .yellow
+        default:
+            return .red
+        }
+    }
+    
     private let brandGreen = Color(.systemGreen)
     private let cautionRed = Color(.systemRed)
+
+    private var standingTimeText: String {
+        let hours = healthManager.todayStandingMinutes / 60
+        let minutes = healthManager.todayStandingMinutes % 60
+
+        if hours > 0 && minutes > 0 {
+            return "\(hours)h \(minutes)m"
+        } else if hours > 0 {
+            return "\(hours)h"
+        } else {
+            return "\(minutes)m"
+        }
+    }
 
     var body: some View {
         ScrollView {
@@ -25,6 +57,10 @@ struct HomeView: View {
                 statsSection
 
                 activitySection
+                
+                stepsCard
+                
+                ActivityCard()
             }
             .padding(.horizontal, 24)
             .padding(.top, 18)
@@ -47,6 +83,9 @@ struct HomeView: View {
             .presentationDetents([.medium, .large])
             .presentationDragIndicator(.visible)
             .presentationBackground(Color(.systemGroupedBackground))
+        }
+        .task {
+            await healthManager.requestAuthorizationAndFetchTodayMetrics()
         }
     }
 
@@ -214,11 +253,11 @@ struct HomeView: View {
 
     private var statsSection: some View {
         HStack(spacing: 0) {
-            statItem(icon: "figure.walk", value: "5,102", label: "Steps")
+            statItem(icon: "figure.walk", value: healthManager.todaySteps.formatted(), label: "Steps")
 
             statDivider
 
-            statItem(icon: "figure.stand", value: "3h 13m", label: "Standing")
+            statItem(icon: "figure.stand", value: standingTimeText, label: "Standing")
 
             statDivider
 
@@ -328,6 +367,58 @@ struct HomeView: View {
 
     private func deleteActivity(_ activity: ActivityItem) {
         activityItems.removeAll { $0.id == activity.id }
+    }
+    
+    private var stepsCard: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                Label("Today Steps", systemImage: "figure.walk")
+                    .font(.headline)
+
+                Spacer()
+
+                Button {
+                    Task {
+                        await healthManager.refreshTodayMetrics()
+                    }
+                } label: {
+                    Image(systemName: "arrow.clockwise")
+                }
+                .buttonStyle(.borderless)
+                .disabled(healthManager.isLoading)
+                .accessibilityLabel("Refresh steps")
+            }
+
+            if healthManager.isLoading {
+                ProgressView()
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            } else {
+                Text(healthManager.todaySteps.formatted())
+                    .font(.system(size: 44, weight: .bold, design: .rounded))
+                Text("of \(user.maxFootLoad.formatted()) recommended steps")
+                    .foregroundStyle(.secondary)
+            }
+
+            Divider()
+
+            HStack {
+                Label(user.condition.title, systemImage: "heart.text.square")
+                Spacer()
+                Text("Max \(user.maxFootLoad.formatted())")
+                    .foregroundStyle(.secondary)
+            }
+            .font(.subheadline)
+
+            if let errorMessage = healthManager.errorMessage {
+                Text(errorMessage)
+                    .font(.footnote)
+                    .foregroundStyle(.red)
+            }
+        }
+        .padding(20)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Color(.systemBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
     }
 }
 
@@ -475,6 +566,7 @@ private struct ActivityDetailPlaceholder: View {
 
 #Preview("home") {
     NavigationStack {
-        HomeView()
+        HomeView(user: User(name: "User", footCondition: .moderate, standCondition: .mild))
+            .modelContainer(for: User.self, inMemory: true)
     }
 }
