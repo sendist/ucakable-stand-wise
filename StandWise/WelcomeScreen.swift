@@ -17,12 +17,12 @@ struct WelcomeScreen: View {
             ZStack {
                 background
 
-                VStack(spacing: 28) {
-                    Spacer(minLength: 32)
+                VStack(spacing: 24) {
+                    Spacer(minLength: 24)
 
                     hero
 
-                    VStack(spacing: 14) {
+                    VStack(spacing: 12) {
                         VStack(spacing: 4) {
                             Text("StandWise")
                                 .font(.system(.largeTitle, design: .serif, weight: .bold))
@@ -39,11 +39,11 @@ struct WelcomeScreen: View {
                             .lineLimit(3)
                             .fixedSize(horizontal: false, vertical: true)
                     }
-                    .padding(.horizontal, 28)
+                    .padding(.horizontal, 24)
 
-                    Spacer(minLength: 24)
+                    Spacer(minLength: 20)
 
-                    VStack(spacing: 18) {
+                    VStack(spacing: 14) {
                         Button(action: onGetStarted) {
                             Text("Get Started")
                                 .frame(maxWidth: .infinity)
@@ -57,8 +57,8 @@ struct WelcomeScreen: View {
                             .foregroundStyle(.secondary)
                             .multilineTextAlignment(.center)
                     }
-                    .padding(.horizontal, 28)
-                    .padding(.bottom, 22)
+                    .padding(.horizontal, 24)
+                    .padding(.bottom, 20)
                 }
             }
             .navigationBarTitleDisplayMode(.inline)
@@ -83,16 +83,16 @@ struct WelcomeScreen: View {
         ZStack {
             Circle()
                 .fill(.thinMaterial)
-                .frame(width: 184, height: 184)
+                .frame(width: 172, height: 172)
                 .shadow(color: brandGreen.opacity(0.18), radius: 22, y: 12)
 
             Circle()
                 .strokeBorder(brandGreen.opacity(0.2), lineWidth: 1)
-                .frame(width: 184, height: 184)
+                .frame(width: 172, height: 172)
 
             Image(systemName: "figure.walk.circle.fill")
                 .symbolRenderingMode(.hierarchical)
-                .font(.system(size: 88, weight: .regular))
+                .font(.system(size: 82, weight: .regular))
                 .foregroundStyle(brandGreen)
                 .accessibilityHidden(true)
         }

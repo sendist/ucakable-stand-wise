@@ -17,20 +17,20 @@ struct HealthAccessScreen: View {
         ZStack {
             background
 
-            VStack(spacing: 28) {
-                Spacer(minLength: 28)
+            VStack(spacing: 24) {
+                Spacer(minLength: 20)
 
                 header
                 permissionsCard
                 privacyNote
 
-                Spacer(minLength: 20)
+                Spacer(minLength: 16)
 
                 actions
                     .padding(.horizontal, 4)
             }
             .padding(.horizontal, 24)
-            .padding(.vertical, 20)
+            .padding(.vertical, 16)
         }
     }
 
@@ -48,14 +48,14 @@ struct HealthAccessScreen: View {
     }
 
     private var header: some View {
-        VStack(spacing: 22) {
+        VStack(spacing: 20) {
             Image("Health")
                 .resizable()
                 .scaledToFit()
-                .frame(width: 120, height: 120)
+                .frame(width: 112, height: 112)
                 .accessibilityLabel("Apple Health")
 
-            VStack(spacing: 10) {
+            VStack(spacing: 8) {
                 Text("Health Access")
                     .font(.title.bold())
                     .multilineTextAlignment(.center)
@@ -90,9 +90,9 @@ struct HealthAccessScreen: View {
             )
         }
         .padding(.vertical, 8)
-        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 22, style: .continuous))
+        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 20, style: .continuous))
         .overlay {
-            RoundedRectangle(cornerRadius: 22, style: .continuous)
+            RoundedRectangle(cornerRadius: 20, style: .continuous)
                 .strokeBorder(Color.primary.opacity(0.06), lineWidth: 1)
         }
     }

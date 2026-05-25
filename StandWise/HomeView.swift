@@ -12,31 +12,34 @@ struct HomeView: View {
     @State private var activityItems = ActivityItem.sampleData
     @State private var activityEditor: ActivityEditor?
 
-    private let brandGreen = Color(.systemGreen)
+    private let brandGreen = Color(red: 0.05, green: 0.48, blue: 0.22)
     private let cautionRed = Color(.systemRed)
 
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 28) {
-                profileHeader
+        GeometryReader { proxy in
+            ScrollView {
+                VStack(alignment: .leading, spacing: 24) {
+                    profileHeader
 
-                warningWidget
+                    warningWidget
 
-                statsSection
+                    statsSection
 
-                activitySection
+                    activitySection
+                }
+                .padding(.horizontal, 20)
+                .padding(.top, 16)
+                .padding(.bottom, 28)
             }
-            .padding(.horizontal, 24)
-            .padding(.top, 18)
-            .padding(.bottom, 32)
+            .background(background)
         }
-        .background(Color(.systemGroupedBackground))
         .navigationBarTitleDisplayMode(.inline)
         .toolbar(.hidden, for: .navigationBar)
         .sheet(isPresented: $isShowingSnooze) {
             SnoozeView()
-                .presentationDetents([.height(570)])
+                .presentationDetents([.height(460)])
                 .presentationDragIndicator(.visible)
+                .presentationBackground(Color(.systemGroupedBackground))
         }
         .sheet(item: $activityEditor) { editor in
             ActivityEditorView(editor: editor) { savedActivity in
@@ -50,16 +53,29 @@ struct HomeView: View {
         }
     }
 
+    private var background: some View {
+        LinearGradient(
+            colors: [
+                Color(.systemBackground),
+                Color(.secondarySystemBackground),
+                brandGreen.opacity(0.08)
+            ],
+            startPoint: .top,
+            endPoint: .bottom
+        )
+        .ignoresSafeArea()
+    }
+
     private var profileHeader: some View {
-        VStack(alignment: .leading, spacing: 14) {
-            HStack(spacing: 14) {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(spacing: 12) {
                 Circle()
-                    .fill(Color(.systemGray3))
-                    .frame(width: 56, height: 56)
+                    .fill(brandGreen)
+                    .frame(width: 52, height: 52)
                     .overlay {
                         Image(systemName: "person.fill")
                             .font(.title2)
-                            .foregroundStyle(.white.opacity(0.7))
+                            .foregroundStyle(.white.opacity(0.88))
                     }
                     .accessibilityHidden(true)
 
@@ -82,7 +98,7 @@ struct HomeView: View {
     }
 
     private var warningWidget: some View {
-        VStack(alignment: .leading, spacing: 14) {
+        VStack(alignment: .leading, spacing: 12) {
             HStack(alignment: .firstTextBaseline) {
                 Text("YOUR FEET ARE CURRENTLY")
                     .font(.caption.weight(.bold))
@@ -138,11 +154,11 @@ struct HomeView: View {
 
             painLogLink
         }
-        .padding(18)
+        .padding(16)
         .background(warningBackground)
-        .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
+        .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
         .overlay {
-            RoundedRectangle(cornerRadius: 24, style: .continuous)
+            RoundedRectangle(cornerRadius: 22, style: .continuous)
                 .stroke(.white.opacity(0.85), lineWidth: 1)
         }
         .shadow(color: .black.opacity(0.10), radius: 10, y: 5)
@@ -200,8 +216,8 @@ struct HomeView: View {
                 .fontWeight(.heavy)
                 .foregroundStyle(cautionRed)
         }
-        .padding(.horizontal, 18)
-        .frame(height: 48)
+        .padding(.horizontal, 16)
+        .frame(height: 44)
         .background(
             Capsule()
                 .fill(Color.white.opacity(0.25))
@@ -224,19 +240,23 @@ struct HomeView: View {
 
             statItem(icon: "sofa.fill", value: "2h 5m", label: "Rest")
         }
-        .padding(.horizontal, 20)
-        .padding(.vertical, 26)
+        .padding(.horizontal, 16)
+        .padding(.vertical, 20)
         .frame(maxWidth: .infinity)
-        .background(Color(.secondarySystemGroupedBackground))
+        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 22, style: .continuous))
+        .overlay {
+            RoundedRectangle(cornerRadius: 22, style: .continuous)
+                .strokeBorder(Color.primary.opacity(0.06), lineWidth: 1)
+        }
     }
 
     private func statItem(icon: String, value: String, label: String) -> some View {
         VStack(spacing: 7) {
             Image(systemName: icon)
                 .font(.title2.weight(.semibold))
-                .foregroundStyle(.primary)
-                .frame(width: 50, height: 50)
-                .background(Color(.systemGray4))
+                .foregroundStyle(brandGreen)
+                .frame(width: 44, height: 44)
+                .background(brandGreen.opacity(0.10))
                 .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
 
             VStack(spacing: 0) {
@@ -255,7 +275,7 @@ struct HomeView: View {
     private var statDivider: some View {
         Rectangle()
             .fill(Color(.separator))
-            .frame(width: 1, height: 74)
+            .frame(width: 1, height: 64)
     }
 
     private var warningBackground: some View {
@@ -271,7 +291,7 @@ struct HomeView: View {
     }
 
     private var activitySection: some View {
-        VStack(alignment: .leading, spacing: 14) {
+        VStack(alignment: .leading, spacing: 12) {
             HStack {
                 Text("Your Activity")
                     .font(.title2.weight(.bold))
@@ -286,7 +306,7 @@ struct HomeView: View {
                 }
                 .font(.subheadline.weight(.semibold))
                 .labelStyle(.titleAndIcon)
-                .foregroundStyle(brandGreen.opacity(0.75))
+                .foregroundStyle(brandGreen)
             }
 
             VStack(spacing: 0) {
@@ -305,8 +325,11 @@ struct HomeView: View {
                 }
             }
             .padding(.vertical, 4)
-            .background(Color(.secondarySystemGroupedBackground))
-            .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
+            .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 22, style: .continuous))
+            .overlay {
+                RoundedRectangle(cornerRadius: 22, style: .continuous)
+                    .strokeBorder(Color.primary.opacity(0.06), lineWidth: 1)
+            }
         }
     }
 

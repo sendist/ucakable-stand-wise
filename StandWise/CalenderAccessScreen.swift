@@ -18,20 +18,20 @@ struct CalenderAccessScreen: View {
         ZStack {
             background
 
-            VStack(spacing: 28) {
-                Spacer(minLength: 28)
+            VStack(spacing: 24) {
+                Spacer(minLength: 20)
 
                 header
                 scheduleCard
                 privacyNote
 
-                Spacer(minLength: 20)
+                Spacer(minLength: 16)
 
                 actions
                     .padding(.horizontal, 4)
             }
             .padding(.horizontal, 24)
-            .padding(.vertical, 20)
+            .padding(.vertical, 16)
         }
     }
 
@@ -49,12 +49,12 @@ struct CalenderAccessScreen: View {
     }
 
     private var header: some View {
-        VStack(spacing: 22) {
+        VStack(spacing: 20) {
             CalendarIcon()
-                .frame(width: 120, height: 120)
+                .frame(width: 112, height: 112)
                 .accessibilityLabel("Calendar")
 
-            VStack(spacing: 10) {
+            VStack(spacing: 8) {
                 Text("Calendar Access")
                     .font(.title.bold())
                     .multilineTextAlignment(.center)
@@ -72,8 +72,8 @@ struct CalenderAccessScreen: View {
     private var scheduleCard: some View {
         VStack(spacing: 0) {
             CalendarLoadRow(
-                color: .green,
-                title: "Light",
+                color: Color("ImpactLow"),
+                title: "Low Impact",
                 subtitle: "Meetings, calls, desk work"
             )
 
@@ -81,8 +81,8 @@ struct CalenderAccessScreen: View {
                 .padding(.leading)
 
             CalendarLoadRow(
-                color: .yellow,
-                title: "Moderate",
+                color: Color("ImpactMid"),
+                title: "Mid Impact",
                 subtitle: "Presentations and training"
             )
 
@@ -90,15 +90,15 @@ struct CalenderAccessScreen: View {
                 .padding(.leading)
 
             CalendarLoadRow(
-                color: .red,
-                title: "Heavy",
+                color: Color("ImpactHigh"),
+                title: "High Impact",
                 subtitle: "Field events, outdoor work, walks"
             )
         }
         .padding(.vertical, 8)
-        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 22, style: .continuous))
+        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 20, style: .continuous))
         .overlay {
-            RoundedRectangle(cornerRadius: 22, style: .continuous)
+            RoundedRectangle(cornerRadius: 20, style: .continuous)
                 .strokeBorder(Color.primary.opacity(0.06), lineWidth: 1)
         }
     }
