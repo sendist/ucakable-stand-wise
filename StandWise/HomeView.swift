@@ -12,8 +12,6 @@ struct HomeView: View {
     let user: User
 
     @State private var isShowingSnooze = false
-    @State private var activityItems = ActivityItem.sampleData
-    @State private var activityEditor: ActivityEditor?
     @State private var healthManager = HealthManager()
 
     private let brandGreen = Color(red: 0.05, green: 0.48, blue: 0.22)
@@ -38,7 +36,6 @@ struct HomeView: View {
                 profileHeader
                 statusWidget
                 statsSection
-                activitySection
                 ActivityCard()
             }
             .padding(.horizontal, 24)
@@ -53,16 +50,6 @@ struct HomeView: View {
                 .presentationDetents([.height(460)])
                 .presentationDragIndicator(.visible)
                 .presentationBackground(Color(.systemGroupedBackground))
-        }
-        .sheet(item: $activityEditor) { editor in
-            ActivityEditorView(editor: editor) { savedActivity in
-                saveActivity(savedActivity, isNew: editor.isNew)
-            } onDelete: { deletedActivity in
-                deleteActivity(deletedActivity)
-            }
-            .presentationDetents([.medium, .large])
-            .presentationDragIndicator(.visible)
-            .presentationBackground(Color(.systemGroupedBackground))
         }
         .task {
             await healthManager.requestAuthorizationAndFetchTodayMetrics()
@@ -383,69 +370,6 @@ struct HomeView: View {
         )
     }
 
-    private var activitySection: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            HStack {
-                Text("Your Activity")
-                    .font(.title2.weight(.bold))
-                    .foregroundStyle(.primary)
-
-                Spacer()
-
-                Button {
-                    activityEditor = .new()
-                } label: {
-                    Label("Add Activity", systemImage: "plus")
-                }
-                .font(.subheadline.weight(.semibold))
-                .labelStyle(.titleAndIcon)
-                .foregroundStyle(brandGreen)
-            }
-
-            VStack(spacing: 0) {
-                ForEach(activityItems) { item in
-                    Button {
-                        activityEditor = .edit(item)
-                    } label: {
-                        ActivityRow(item: item)
-                    }
-                    .buttonStyle(.plain)
-
-                    if item.id != activityItems.last?.id {
-                        Divider()
-                            .padding(.leading, 96)
-                    }
-                }
-            }
-            .padding(.vertical, 4)
-            .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 22, style: .continuous))
-            .overlay {
-                RoundedRectangle(cornerRadius: 22, style: .continuous)
-                    .strokeBorder(Color.primary.opacity(0.06), lineWidth: 1)
-            }
-        }
-    }
-
-    private func saveActivity(_ activity: ActivityItem, isNew: Bool) {
-        var activity = activity
-        activity.title = activity.title.trimmingCharacters(in: .whitespacesAndNewlines)
-
-        if isNew {
-            activityItems.append(activity)
-            return
-        }
-
-        guard let index = activityItems.firstIndex(where: { $0.id == activity.id }) else {
-            return
-        }
-
-        activityItems[index] = activity
-    }
-
-    private func deleteActivity(_ activity: ActivityItem) {
-        activityItems.removeAll { $0.id == activity.id }
-    }
-
     private func formattedDuration(minutes: Int) -> String {
         let hours = minutes / 60
         let remainingMinutes = minutes % 60
@@ -456,99 +380,6 @@ struct HomeView: View {
             return "\(hours)h"
         } else {
             return "\(remainingMinutes)m"
-        }
-    }
-}
-
-struct ActivityItem: Identifiable {
-    let id: UUID
-    var title: String
-    var impact: ActivityImpact
-    var isAllDay: Bool
-    var startDate: Date
-    var endDate: Date
-
-    init(
-        id: UUID = UUID(),
-        title: String,
-        impact: ActivityImpact,
-        isAllDay: Bool = false,
-        startDate: Date,
-        endDate: Date
-    ) {
-        self.id = id
-        self.title = title
-        self.impact = impact
-        self.isAllDay = isAllDay
-        self.startDate = startDate
-        self.endDate = endDate
-    }
-
-    var time: String {
-        if isAllDay {
-            return "All-day"
-        }
-
-        return Self.timeFormatter.string(from: startDate)
-    }
-
-    static let sampleData = [
-        ActivityItem(title: "Morning Walk", impact: .mid, startDate: sampleDate(hour: 6, minute: 0), endDate: sampleDate(hour: 7, minute: 0)),
-        ActivityItem(title: "Badminton", impact: .high, startDate: sampleDate(hour: 9, minute: 30), endDate: sampleDate(hour: 10, minute: 30)),
-        ActivityItem(title: "Teaching", impact: .mid, startDate: sampleDate(hour: 13, minute: 0), endDate: sampleDate(hour: 15, minute: 0)),
-        ActivityItem(title: "Swimming", impact: .low, startDate: sampleDate(hour: 19, minute: 0), endDate: sampleDate(hour: 20, minute: 0))
-    ]
-
-    static func sampleDate(hour: Int, minute: Int) -> Date {
-        var components = Calendar.current.dateComponents([.year, .month, .day], from: Date())
-        components.hour = hour
-        components.minute = minute
-        return Calendar.current.date(from: components) ?? Date()
-    }
-
-    private static let timeFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .none
-        formatter.timeStyle = .short
-        return formatter
-    }()
-}
-
-enum ActivityImpact: String, CaseIterable, Identifiable {
-    case low = "LOW IMPACT"
-    case mid = "MID IMPACT"
-    case high = "HIGH IMPACT"
-
-    var id: Self { self }
-
-    var title: String {
-        switch self {
-        case .low:
-            "Low Impact"
-        case .mid:
-            "Mid Impact"
-        case .high:
-            "High Impact"
-        }
-    }
-
-    var color: Color {
-        switch self {
-        case .low:
-            Color("ImpactLow")
-        case .mid:
-            Color("ImpactMid")
-        case .high:
-            Color("ImpactHigh")
-        }
-    }
-
-    var foregroundColor: Color {
-        switch self {
-        case .mid:
-            .black
-        case .low, .high:
-            .white
         }
     }
 }
