@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8339B35D2FC3FEE200A5129B /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 8339B35C2FC3FEDB00A5129B /* .gitignore */; };
+		8339B35E2FC3FEE200A5129B /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 8339B35C2FC3FEDB00A5129B /* .gitignore */; };
 		837ACBFA2FBC494F004F1B0C /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 837ACBF92FBC494E004F1B0C /* WidgetKit.framework */; };
 		837ACBFC2FBC494F004F1B0C /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 837ACBFB2FBC494F004F1B0C /* SwiftUI.framework */; };
 		837ACC0D2FBC4950004F1B0C /* IndicatorExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 837ACBF72FBC494E004F1B0C /* IndicatorExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -37,6 +39,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		8339B35C2FC3FEDB00A5129B /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		837ACB9B2FBC0221004F1B0C /* StandWise.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = StandWise.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		837ACBF72FBC494E004F1B0C /* IndicatorExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = IndicatorExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		837ACBF92FBC494E004F1B0C /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
@@ -102,6 +105,7 @@
 		837ACB922FBC0221004F1B0C = {
 			isa = PBXGroup;
 			children = (
+				8339B35C2FC3FEDB00A5129B /* .gitignore */,
 				8339B2D92FC3FA8400A5129B /* Data */,
 				8339B2C12FC3FA7900A5129B /* Feature */,
 				837ACB9D2FBC0221004F1B0C /* StandWise */,
@@ -225,6 +229,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8339B35D2FC3FEE200A5129B /* .gitignore in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -232,6 +237,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8339B35E2FC3FEE200A5129B /* .gitignore in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
