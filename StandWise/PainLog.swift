@@ -8,8 +8,6 @@
 import SwiftUI
 
 struct PainLogView: View {
-    @Environment(\.dismiss) private var dismiss
-
     @State private var selectedLocation = "Heel"
     @State private var selectedSeverity = 3
     @State private var selectedContexts: Set<String> = []
@@ -18,36 +16,22 @@ struct PainLogView: View {
     private let contextOptions = ["Just started", "Been hurting a while", "After sitting down"]
 
     var body: some View {
-        NavigationStack {
-            ScrollView(showsIndicators: false) {
-                VStack(alignment: .leading, spacing: 28) {
-                    header
-                    painLocationSection
-                    severitySection
-                    contextSection
-                    infoBox
-                    saveButton
-                }
-                .padding(.horizontal, 24)
-                .padding(.top, 18)
-                .padding(.bottom, 32)
+        ScrollView(showsIndicators: false) {
+            VStack(alignment: .leading, spacing: 28) {
+                header
+                painLocationSection
+                severitySection
+                contextSection
+                infoBox
+                saveButton
             }
-            .background(Color(.systemBackground))
-            .navigationTitle("Pain Log")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    Button {
-                        dismiss()
-                    } label: {
-                        Image(systemName: "chevron.left")
-                            .font(.headline.weight(.semibold))
-                            .foregroundStyle(.primary)
-                    }
-                    .accessibilityLabel("Back")
-                }
-            }
+            .padding(.horizontal, 24)
+            .padding(.top, 18)
+            .padding(.bottom, 32)
         }
+        .background(Color(.systemBackground))
+        .navigationTitle("Pain Log")
+        .navigationBarTitleDisplayMode(.inline)
     }
 
     private var header: some View {
@@ -317,5 +301,7 @@ private struct SeverityOption: Identifiable {
 }
 
 #Preview {
-    PainLogView()
+    NavigationStack {
+        PainLogView()
+    }
 }
