@@ -27,6 +27,19 @@ struct HomeFeatureView: View {
         }
     }
 
+    private var standingTimeText: String {
+        let hours = healthManager.todayStandingMinutes / 60
+        let minutes = healthManager.todayStandingMinutes % 60
+
+        if hours > 0 && minutes > 0 {
+            return "\(hours)h \(minutes)m"
+        } else if hours > 0 {
+            return "\(hours)h"
+        } else {
+            return "\(minutes)m"
+        }
+    }
+
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -56,7 +69,7 @@ struct HomeFeatureView: View {
             .navigationTitle("StandWise")
         }
         .task {
-            await healthManager.requestAuthorizationAndFetchSteps()
+            await healthManager.requestAuthorizationAndFetchTodayMetrics()
         }
     }
 
@@ -70,7 +83,7 @@ struct HomeFeatureView: View {
 
                 Button {
                     Task {
-                        await healthManager.refreshTodaySteps()
+                        await healthManager.refreshTodayMetrics()
                     }
                 } label: {
                     Image(systemName: "arrow.clockwise")
@@ -96,6 +109,14 @@ struct HomeFeatureView: View {
                 Label(user.condition.title, systemImage: "heart.text.square")
                 Spacer()
                 Text("Max \(user.maxFootLoad.formatted())")
+                    .foregroundStyle(.secondary)
+            }
+            .font(.subheadline)
+
+            HStack {
+                Label("Standing", systemImage: "figure.stand")
+                Spacer()
+                Text(standingTimeText)
                     .foregroundStyle(.secondary)
             }
             .font(.subheadline)
