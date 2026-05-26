@@ -95,31 +95,13 @@ struct HomeView: View {
     }
 
     private var background: some View {
-        LinearGradient(
-            colors: [
-                Color(.systemBackground),
-                Color(.secondarySystemBackground),
-                brandGreen.opacity(0.08)
-            ],
-            startPoint: .top,
-            endPoint: .bottom
-        )
-        .ignoresSafeArea()
+        Color(.systemBackground)
+            .ignoresSafeArea()
     }
 
     private var profileHeader: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            HStack(spacing: 12) {
-                Circle()
-                    .fill(brandGreen)
-                    .frame(width: 52, height: 52)
-                    .overlay {
-                        Image(systemName: "person.fill")
-                            .font(.title2)
-                            .foregroundStyle(.white.opacity(0.88))
-                    }
-                    .accessibilityHidden(true)
-
+        HStack(alignment: .center, spacing: 16) {
+            VStack(alignment: .leading, spacing: 8) {
                 HStack(spacing: 0) {
                     Text("Hello, ")
                         .font(.title)
@@ -129,12 +111,20 @@ struct HomeView: View {
                         .font(.title)
                         .fontWeight(.bold)
                 }
+
+                Text("Let's keep your activity in balance today.")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
             }
 
-            Text("Let's keep your activity in balance today.")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-                .fixedSize(horizontal: false, vertical: true)
+            Spacer(minLength: 12)
+
+            Image(systemName: "person.circle.fill")
+                .font(.system(size: 52))
+                .symbolRenderingMode(.hierarchical)
+                .foregroundStyle(.black)
+                .accessibilityHidden(true)
         }
     }
 
@@ -379,37 +369,15 @@ struct HomeView: View {
     }
 
     private var warningBackground: some View {
-        LinearGradient(
-            colors: [
-                Color("WarningGradientTop"),
-                Color("WarningGradientMiddle"),
-                Color("WarningGradientBottom")
-            ],
-            startPoint: .topLeading,
-            endPoint: .bottomTrailing
-        )
+        Color("WarningGradientMiddle")
     }
 
     private var cautionBackground: some View {
-        LinearGradient(
-            colors: [
-                Color(.systemBackground),
-                cautionYellow.opacity(0.26)
-            ],
-            startPoint: .topLeading,
-            endPoint: .bottomTrailing
-        )
+        Color(.systemYellow).opacity(0.18)
     }
 
     private var safeBackground: some View {
-        LinearGradient(
-            colors: [
-                Color(.systemBackground),
-                brandGreen.opacity(0.18)
-            ],
-            startPoint: .topLeading,
-            endPoint: .bottomTrailing
-        )
+        brandGreen.opacity(0.12)
     }
 
     private func formattedDuration(minutes: Int) -> String {

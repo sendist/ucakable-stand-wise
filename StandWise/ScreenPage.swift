@@ -16,13 +16,20 @@ struct ScreenPage: View {
             backgroundColor
                 .ignoresSafeArea()
 
-            VStack(spacing: 2) {
+            VStack(spacing: 10) {
+                Image("AppLogo")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 88, height: 88)
+                    .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
+                    .accessibilityHidden(true)
+
                 Text("StandWise")
-                    .font(.system(size: 44, weight: .bold, design: .serif))
+                    .font(.largeTitle.bold())
                     .foregroundStyle(brandGreen)
 
                 Text("TRACK · RECOVER · RISE")
-                    .font(.system(size: 13, weight: .medium))
+                    .font(.caption.weight(.medium))
                     .foregroundStyle(brandGreen)
             }
             .multilineTextAlignment(.center)

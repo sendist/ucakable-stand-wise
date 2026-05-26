@@ -36,16 +36,8 @@ struct CalenderAccessScreen: View {
     }
 
     private var background: some View {
-        LinearGradient(
-            colors: [
-                Color(.systemBackground),
-                Color(.secondarySystemBackground),
-                brandGreen.opacity(0.08)
-            ],
-            startPoint: .top,
-            endPoint: .bottom
-        )
-        .ignoresSafeArea()
+        Color(.systemBackground)
+            .ignoresSafeArea()
     }
 
     private var header: some View {
@@ -180,7 +172,7 @@ private struct CalendarLoadRow: View {
             }
         } icon: {
             Circle()
-                .fill(color.gradient)
+                .fill(color)
                 .frame(width: 12, height: 12)
                 .accessibilityHidden(true)
         }

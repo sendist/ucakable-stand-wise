@@ -25,7 +25,7 @@ struct WelcomeScreen: View {
                     VStack(spacing: 12) {
                         VStack(spacing: 4) {
                             Text("StandWise")
-                                .font(.system(.largeTitle, design: .serif, weight: .bold))
+                                .font(.largeTitle.bold())
 
                             Text("TRACK · RECOVER · RISE")
                                 .font(.footnote.weight(.semibold))
@@ -67,36 +67,18 @@ struct WelcomeScreen: View {
     }
 
     private var background: some View {
-        LinearGradient(
-            colors: [
-                Color(.systemBackground),
-                Color(.secondarySystemBackground),
-                brandGreen.opacity(0.12)
-            ],
-            startPoint: .top,
-            endPoint: .bottom
-        )
-        .ignoresSafeArea()
+        Color(.systemBackground)
+            .ignoresSafeArea()
     }
 
     private var hero: some View {
-        ZStack {
-            Circle()
-                .fill(.thinMaterial)
-                .frame(width: 172, height: 172)
-                .shadow(color: brandGreen.opacity(0.18), radius: 22, y: 12)
-
-            Circle()
-                .strokeBorder(brandGreen.opacity(0.2), lineWidth: 1)
-                .frame(width: 172, height: 172)
-
-            Image(systemName: "figure.walk.circle.fill")
-                .symbolRenderingMode(.hierarchical)
-                .font(.system(size: 82, weight: .regular))
-                .foregroundStyle(brandGreen)
-                .accessibilityHidden(true)
-        }
-        .frame(maxWidth: .infinity)
+        Image("AppLogo")
+            .resizable()
+            .scaledToFit()
+            .frame(width: 108, height: 108)
+            .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
+            .accessibilityHidden(true)
+            .frame(maxWidth: .infinity)
     }
 }
 

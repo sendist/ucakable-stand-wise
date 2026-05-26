@@ -119,16 +119,8 @@ struct ActivityEditorView: View {
     }
 
     private var background: some View {
-        LinearGradient(
-            colors: [
-                Color(.systemBackground),
-                Color(.secondarySystemBackground),
-                brandGreen.opacity(0.08)
-            ],
-            startPoint: .top,
-            endPoint: .bottom
-        )
-        .ignoresSafeArea()
+        Color(.systemGroupedBackground)
+            .ignoresSafeArea()
     }
 
     private func save() {

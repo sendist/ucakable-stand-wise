@@ -33,32 +33,17 @@ struct OnboardingSuccessScreen: View {
     }
 
     private var background: some View {
-        LinearGradient(
-            colors: [
-                Color(.systemBackground),
-                Color(.secondarySystemBackground),
-                brandGreen.opacity(0.08)
-            ],
-            startPoint: .top,
-            endPoint: .bottom
-        )
-        .ignoresSafeArea()
+        Color(.systemBackground)
+            .ignoresSafeArea()
     }
 
     private var header: some View {
-        VStack(spacing: 24) {
-            ZStack {
-                RoundedRectangle(cornerRadius: 34, style: .continuous)
-                    .fill(brandGreen.gradient)
-                    .shadow(color: brandGreen.opacity(0.24), radius: 18, y: 10)
-
-                Image(systemName: "checkmark")
-                    .font(.system(size: 72, weight: .bold, design: .rounded))
-                    .foregroundStyle(Color.green)
-                    .accessibilityHidden(true)
-            }
-            .frame(width: 120, height: 120)
-            .accessibilityLabel("Setup complete")
+        VStack(spacing: 14) {
+            Image(systemName: "checkmark.circle.fill")
+                .font(.system(size: 90))
+                .symbolRenderingMode(.hierarchical)
+                .foregroundStyle(brandGreen)
+                .accessibilityLabel("Setup complete")
 
             VStack(spacing: 8) {
                 Text("You're all set.")
@@ -86,19 +71,19 @@ struct OnboardingSuccessScreen: View {
 
             VStack(spacing: 0) {
                 SuccessStatusRow(
-                    color: .green,
+                    color: brandGreen,
                     title: "Health background tracking",
                     isEnabled: true
                 )
 
                 SuccessStatusRow(
-                    color: .green,
+                    color: brandGreen,
                     title: "Calendar predictive alerts",
                     isEnabled: true
                 )
 
                 SuccessStatusRow(
-                    color: .green,
+                    color: brandGreen,
                     title: "Proactive notifications",
                     isEnabled: true
                 )
@@ -144,7 +129,7 @@ private struct SuccessStatusRow: View {
                 .fixedSize(horizontal: false, vertical: true)
         } icon: {
             Circle()
-                .fill(color.gradient)
+                .fill(color)
                 .frame(width: 12, height: 12)
                 .accessibilityHidden(true)
         }

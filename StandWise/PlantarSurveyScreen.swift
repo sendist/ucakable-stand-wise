@@ -61,29 +61,15 @@ struct PlantarSurveyScreen: View {
     }
 
     private var background: some View {
-        LinearGradient(
-            colors: [
-                Color(.systemBackground),
-                Color(.secondarySystemBackground),
-                brandGreen.opacity(0.08)
-            ],
-            startPoint: .top,
-            endPoint: .bottom
-        )
-        .ignoresSafeArea()
+        Color(.systemBackground)
+            .ignoresSafeArea()
     }
 
     private var topScrollBlur: some View {
         Rectangle()
             .fill(.ultraThinMaterial)
             .frame(height: 150)
-            .mask(
-                LinearGradient(
-                    colors: [.black.opacity(0.9), .black.opacity(0.35), .clear],
-                    startPoint: .top,
-                    endPoint: .bottom
-                )
-            )
+            
             .ignoresSafeArea(edges: .top)
             .allowsHitTesting(false)
     }
