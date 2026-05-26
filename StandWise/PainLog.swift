@@ -8,9 +8,11 @@
 import SwiftUI
 
 struct PainLogView: View {
+    @Environment(\.dismiss) private var dismiss
     @State private var selectedLocation = "Heel"
     @State private var selectedSeverity = 3
     @State private var selectedContexts: Set<String> = []
+    @State private var showThankYou = false
 
     private let painLocations = ["Heel", "Arch", "Ball of Foot", "Toes"]
     private let contextOptions = ["Just started", "Been hurting a while", "After sitting down"]
@@ -34,6 +36,13 @@ struct PainLogView: View {
         .navigationTitle("Pain Log")
         .navigationBarTitleDisplayMode(.inline)
         .tint(brandGreen)
+        .overlay {
+            if showThankYou {
+                PainLogThankYouView()
+                    .transition(.opacity)
+            }
+        }
+        .animation(.easeInOut(duration: 0.2), value: showThankYou)
     }
 
     private var background: some View {
@@ -132,7 +141,11 @@ struct PainLogView: View {
 
     private var saveButton: some View {
         Button {
-            // Presentation only. Persistence will be added with reminder logic later.
+            showThankYou = true
+            Task {
+                try? await Task.sleep(for: .milliseconds(1200))
+                dismiss()
+            }
         } label: {
             Text("Save Pain Log")
                 .frame(maxWidth: .infinity)
@@ -140,6 +153,7 @@ struct PainLogView: View {
         .buttonStyle(.borderedProminent)
         .controlSize(.large)
         .tint(brandGreen)
+        .disabled(showThankYou)
     }
 
     private func sectionTitle(_ title: String) -> some View {
@@ -325,8 +339,60 @@ private struct SeverityOption: Identifiable {
     var id: Int { value }
 }
 
+private struct PainLogThankYouView: View {
+    private let brandGreen = Color(red: 0.05, green: 0.48, blue: 0.22)
+
+    var body: some View {
+        ZStack {
+            Color.black.opacity(0.18)
+                .ignoresSafeArea()
+
+            VStack(spacing: 16) {
+                ZStack {
+                    Circle()
+                        .fill(brandGreen.gradient)
+                        .shadow(color: brandGreen.opacity(0.24), radius: 12, y: 6)
+
+                    Image(systemName: "checkmark")
+                        .font(.system(size: 40, weight: .bold, design: .rounded))
+                        .foregroundStyle(.white)
+                        .accessibilityHidden(true)
+                }
+                .frame(width: 76, height: 76)
+                .accessibilityLabel("Pain log saved")
+
+                VStack(spacing: 6) {
+                    Text("Thanks for logging!")
+                        .font(.headline.bold())
+                        .multilineTextAlignment(.center)
+                        .foregroundStyle(.primary)
+
+                    Text("Your log helps us understand your pattern better.")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+            }
+            .padding(.horizontal, 24)
+            .padding(.vertical, 24)
+            .frame(maxWidth: 280)
+            .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 20, style: .continuous))
+            .overlay {
+                RoundedRectangle(cornerRadius: 20, style: .continuous)
+                    .strokeBorder(Color.primary.opacity(0.06), lineWidth: 1)
+            }
+            .shadow(color: Color.black.opacity(0.15), radius: 20, y: 10)
+        }
+    }
+}
+
 #Preview {
     NavigationStack {
         PainLogView()
     }
+}
+
+#Preview("Thank You") {
+    PainLogThankYouView()
 }
