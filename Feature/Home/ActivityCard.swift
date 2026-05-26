@@ -117,6 +117,7 @@ struct ActivityCard: View {
             }
             .buttonStyle(.borderedProminent)
             .controlSize(.large)
+            .tint(brandGreen)
             .disabled(eventManager.isLoading)
         }
     }
