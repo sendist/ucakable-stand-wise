@@ -13,13 +13,15 @@ struct HomeFeatureView: View {
 
     @State private var healthManager = HealthManager()
 
+    private let brandGreen = Color(red: 0.05, green: 0.48, blue: 0.22)
+
     private var indicatorColor: Color {
         let maxSteps = max(user.maxFootLoad, 1)
         let progress = Double(healthManager.todaySteps) / Double(maxSteps)
 
         switch progress {
         case ..<0.7:
-            return .green
+            return brandGreen
         case ..<1.0:
             return .yellow
         default:
@@ -46,7 +48,8 @@ struct HomeFeatureView: View {
                 VStack(spacing: 16) {
                     HStack {
                         Image(systemName: "person.crop.circle.fill")
-                            .font(.system(size: 48))
+                            .font(.largeTitle)
+                            .foregroundStyle(.black)
 
                         VStack(alignment: .leading, spacing: 4) {
                             Text("Hello,")
@@ -98,7 +101,7 @@ struct HomeFeatureView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
             } else {
                 Text(healthManager.todaySteps.formatted())
-                    .font(.system(size: 44, weight: .bold, design: .rounded))
+                    .font(.title.bold())
                 Text("of \(user.maxFootLoad.formatted()) recommended steps")
                     .foregroundStyle(.secondary)
             }
@@ -192,6 +195,7 @@ struct ConditionSelectionButton<T: SelectableCondition>: View {
     let condition: T
     @Binding var selectedCondition: T
     private var isSelected: Bool { selectedCondition == condition }
+    private let brandGreen = Color(red: 0.05, green: 0.48, blue: 0.22)
     
     var body: some View {
         Button {
@@ -200,7 +204,7 @@ struct ConditionSelectionButton<T: SelectableCondition>: View {
             HStack(spacing: 12) {
                 Image(systemName: selectedCondition == condition ? "checkmark.circle.fill" : "circle")
                     .font(.title3)
-                    .foregroundStyle(selectedCondition == condition ? .green : .secondary)
+                    .foregroundStyle(selectedCondition == condition ? brandGreen : .secondary)
                 
                 VStack(alignment: .leading, spacing: 4) {
                     Text(condition.title)
@@ -215,7 +219,7 @@ struct ConditionSelectionButton<T: SelectableCondition>: View {
             }
             .padding(16)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .background(selectedCondition == condition ? Color.green.opacity(0.12) : Color(.secondarySystemBackground))
+            .background(selectedCondition == condition ? brandGreen.opacity(0.12) : Color(.secondarySystemBackground))
             .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
         }
         .buttonStyle(.plain)
@@ -230,4 +234,3 @@ struct ConditionSelectionButton<T: SelectableCondition>: View {
     OnboardingFeatureView()
         .modelContainer(for: User.self, inMemory: true)
 }
-

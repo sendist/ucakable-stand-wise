@@ -99,7 +99,7 @@ struct ActivityCard: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
             } else {
                 Text("Calendar")
-                    .font(.system(size: 44, weight: .bold, design: .rounded))
+                    .font(.title.bold())
                 Text("Allow access to show today's activity list")
                     .foregroundStyle(.secondary)
             }
@@ -423,16 +423,8 @@ private struct ActivityCardEditorView: View {
     }
 
     private var background: some View {
-        LinearGradient(
-            colors: [
-                Color(.systemBackground),
-                Color(.secondarySystemBackground),
-                brandGreen.opacity(0.08)
-            ],
-            startPoint: .top,
-            endPoint: .bottom
-        )
-        .ignoresSafeArea()
+        Color(.systemGroupedBackground)
+            .ignoresSafeArea()
     }
 
     private func save() {
