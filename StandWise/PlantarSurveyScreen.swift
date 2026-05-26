@@ -54,24 +54,12 @@ struct PlantarSurveyScreen: View {
                     .padding(.bottom, 8)
                     .background(.clear)
             }
-            .overlay(alignment: .top) {
-                topScrollBlur
-            }
         }
     }
 
     private var background: some View {
         Color(.systemBackground)
             .ignoresSafeArea()
-    }
-
-    private var topScrollBlur: some View {
-        Rectangle()
-            .fill(.ultraThinMaterial)
-            .frame(height: 150)
-            
-            .ignoresSafeArea(edges: .top)
-            .allowsHitTesting(false)
     }
 
 
