@@ -11,6 +11,10 @@ import SwiftUI
 struct HomeView: View {
     let user: User
 
+    @AppStorage("lastCautionNotificationDay") private var lastCautionNotificationDay = ""
+    @AppStorage("warningAcknowledgedDay") private var warningAcknowledgedDay = ""
+    @AppStorage("warningSnoozeMinutes") private var warningSnoozeMinutes = 14
+
     @State private var isShowingSnooze = false
     @State private var healthManager = HealthManager()
 
@@ -20,6 +24,25 @@ struct HomeView: View {
 
     private var stepProgress: Double {
         Double(healthManager.todaySteps) / Double(max(user.maxFootLoad, 1))
+    }
+
+    private var standingProgress: Double {
+        Double(healthManager.todayStandingMinutes) / Double(8 * 60)
+    }
+
+    private var loadProgress: Double {
+        max(stepProgress, standingProgress)
+    }
+
+    private var loadStatus: FootLoadStatus {
+        switch loadProgress {
+        case 1.0...:
+            .warning
+        case 0.7..<1.0:
+            .caution
+        default:
+            .safe
+        }
     }
 
     private var standingTimeText: String {
@@ -46,13 +69,28 @@ struct HomeView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar(.hidden, for: .navigationBar)
         .sheet(isPresented: $isShowingSnooze) {
-            SnoozeView()
+            SnoozeView { minutes in
+                Task {
+                    await scheduleWarningReminder(after: minutes)
+                }
+            }
                 .presentationDetents([.height(460)])
                 .presentationDragIndicator(.visible)
                 .presentationBackground(Color(.systemGroupedBackground))
         }
         .task {
             await healthManager.requestAuthorizationAndFetchTodayMetrics()
+            await evaluateNotifications()
+        }
+        .onChange(of: healthManager.todaySteps) {
+            Task {
+                await evaluateNotifications()
+            }
+        }
+        .onChange(of: healthManager.todayStandingMinutes) {
+            Task {
+                await evaluateNotifications()
+            }
         }
     }
 
@@ -102,7 +140,8 @@ struct HomeView: View {
 
     @ViewBuilder
     private var statusWidget: some View {
-        if stepProgress >= 1.0 {
+        switch loadStatus {
+        case .warning:
             footStatusWidget(
                 eyebrow: "YOUR FEET ARE CURRENTLY",
                 title: "You have exceeded your safe limit.",
@@ -110,9 +149,9 @@ struct HomeView: View {
                 badgeTitle: "WARNING",
                 badgeColor: cautionRed,
                 background: warningBackground,
-                showsActions: true
+                status: .warning
             )
-        } else if stepProgress >= 0.7 {
+        case .caution:
             footStatusWidget(
                 eyebrow: "YOUR FEET NEED CAUTION",
                 title: "You are getting close to your limit.",
@@ -120,9 +159,9 @@ struct HomeView: View {
                 badgeTitle: "CAUTION",
                 badgeColor: cautionYellow,
                 background: cautionBackground,
-                showsActions: true
+                status: .caution
             )
-        } else {
+        case .safe:
             footStatusWidget(
                 eyebrow: "YOUR FEET ARE SAFE",
                 title: "You are within today's safe range.",
@@ -130,7 +169,7 @@ struct HomeView: View {
                 badgeTitle: "SAFE",
                 badgeColor: brandGreen,
                 background: safeBackground,
-                showsActions: false
+                status: .safe
             )
         }
     }
@@ -142,7 +181,7 @@ struct HomeView: View {
         badgeTitle: String,
         badgeColor: Color,
         background: Background,
-        showsActions: Bool
+        status: FootLoadStatus
     ) -> some View {
         VStack(alignment: .leading, spacing: 14) {
             HStack(alignment: .firstTextBaseline) {
@@ -171,8 +210,8 @@ struct HomeView: View {
                     .fixedSize(horizontal: false, vertical: true)
             }
 
-            if showsActions {
-                statusActions(tint: badgeColor)
+            if status != .safe {
+                statusActions(tint: badgeColor, status: status)
             }
 
             painLogLink
@@ -187,9 +226,10 @@ struct HomeView: View {
         .shadow(color: .black.opacity(0.10), radius: 10, y: 5)
     }
 
-    private func statusActions(tint: Color) -> some View {
+    private func statusActions(tint: Color, status: FootLoadStatus) -> some View {
         HStack(spacing: 12) {
             Button {
+                acknowledgeStatus(status)
             } label: {
                 Text("OK")
                     .font(.subheadline.weight(.semibold))
@@ -202,19 +242,21 @@ struct HomeView: View {
             .tint(tint)
             .clipShape(Capsule())
 
-            Button {
-                isShowingSnooze = true
-            } label: {
-                Text("Still Busy")
-                    .font(.subheadline.weight(.semibold))
-                    .padding(.vertical, 6)
-                    .foregroundStyle(.white)
-                    .frame(maxWidth: .infinity)
+            if status == .warning {
+                Button {
+                    isShowingSnooze = true
+                } label: {
+                    Text("Still Busy")
+                        .font(.subheadline.weight(.semibold))
+                        .padding(.vertical, 6)
+                        .foregroundStyle(.white)
+                        .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.borderedProminent)
+                .controlSize(.regular)
+                .tint(Color(.systemGray))
+                .clipShape(Capsule())
             }
-            .buttonStyle(.borderedProminent)
-            .controlSize(.regular)
-            .tint(Color(.systemGray))
-            .clipShape(Capsule())
         }
     }
 
@@ -382,6 +424,61 @@ struct HomeView: View {
             return "\(remainingMinutes)m"
         }
     }
+
+    private func evaluateNotifications() async {
+        switch loadStatus {
+        case .safe:
+            StandWiseNotificationManager.cancelWarningReminder()
+        case .caution:
+            await sendCautionNotificationIfNeeded()
+            StandWiseNotificationManager.cancelWarningReminder()
+        case .warning:
+            await scheduleWarningReminder(after: warningSnoozeMinutes)
+        }
+    }
+
+    private func sendCautionNotificationIfNeeded() async {
+        let today = notificationDayKey
+
+        guard lastCautionNotificationDay != today else {
+            return
+        }
+
+        lastCautionNotificationDay = today
+        await StandWiseNotificationManager.sendCautionNotification()
+    }
+
+    private func scheduleWarningReminder(after minutes: Int) async {
+        guard warningAcknowledgedDay != notificationDayKey else {
+            return
+        }
+
+        await StandWiseNotificationManager.scheduleWarningReminder(after: minutes)
+    }
+
+    private func acknowledgeStatus(_ status: FootLoadStatus) {
+        if status == .warning {
+            warningAcknowledgedDay = notificationDayKey
+            StandWiseNotificationManager.cancelWarningReminder()
+        }
+    }
+
+    private var notificationDayKey: String {
+        Self.dayFormatter.string(from: Date())
+    }
+
+    private static let dayFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.calendar = Calendar(identifier: .gregorian)
+        formatter.dateFormat = "yyyy-MM-dd"
+        return formatter
+    }()
+}
+
+private enum FootLoadStatus {
+    case safe
+    case caution
+    case warning
 }
 
 private struct ActivityRow: View {
