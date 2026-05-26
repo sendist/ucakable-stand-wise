@@ -54,18 +54,28 @@ struct HomeView: View {
     }
 
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 24) {
-                profileHeader
-                statusWidget
-                statsSection
-                ActivityCard()
+        GeometryReader { proxy in
+            ZStack(alignment: .top) {
+                background
+
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 24) {
+                        profileHeader
+                        statusWidget
+                        statsSection
+                        ActivityCard()
+                    }
+                    .padding(.horizontal, 24)
+                    .padding(.top, 16)
+                    .padding(.bottom, 28)
+                }
+
+                Color(.systemBackground)
+                    .frame(height: proxy.safeAreaInsets.top)
+                    .ignoresSafeArea(edges: .top)
+                    .allowsHitTesting(false)
             }
-            .padding(.horizontal, 24)
-            .padding(.top, 16)
-            .padding(.bottom, 28)
         }
-        .background(background)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar(.hidden, for: .navigationBar)
         .sheet(isPresented: $isShowingSnooze) {
