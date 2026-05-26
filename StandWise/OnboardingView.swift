@@ -78,6 +78,10 @@ struct OnboardingView: View {
         createDefaultUserIfNeeded()
         hasCompletedOnboarding = true
         isOnboardingCompleted = true
+
+        Task {
+            await StandWiseNotificationManager.sendWelcomeNotification()
+        }
     }
 
     private func createDefaultUserIfNeeded() {

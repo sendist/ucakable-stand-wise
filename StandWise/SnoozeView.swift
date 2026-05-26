@@ -10,10 +10,19 @@ import SwiftUI
 struct SnoozeView: View {
     @Environment(\.dismiss) private var dismiss
 
-    @State private var selectedMinutes = 14
+    let onSave: (Int) -> Void
+
+    @AppStorage("warningSnoozeMinutes") private var storedSnoozeMinutes = 14
+    @State private var selectedMinutes: Int
 
     private let minuteOptions = Array(1...15)
     private let brandGreen = Color(red: 0.05, green: 0.48, blue: 0.22)
+
+    init(onSave: @escaping (Int) -> Void = { _ in }) {
+        self.onSave = onSave
+        let savedMinutes = UserDefaults.standard.object(forKey: "warningSnoozeMinutes") as? Int
+        _selectedMinutes = State(initialValue: savedMinutes ?? 14)
+    }
 
     var body: some View {
         NavigationStack {
@@ -122,6 +131,9 @@ struct SnoozeView: View {
     }
 
     private func saveDuration() {
+        let minutes = selectedMinutes == 0 ? 14 : selectedMinutes
+        storedSnoozeMinutes = minutes
+        onSave(minutes)
         dismiss()
     }
 }
