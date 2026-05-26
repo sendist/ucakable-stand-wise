@@ -17,45 +17,49 @@ struct PlantarSurveyScreen: View {
     @State private var selectedTypicalDay: PlantarSurveyOption?
 
     var body: some View {
-        ZStack {
-            background
+        GeometryReader { proxy in
+            ZStack(alignment: .top) {
+                background
 
-            ScrollView(showsIndicators: false) {
-                VStack(alignment: .leading, spacing: 22) {
-                    header
+                ScrollView(showsIndicators: false) {
+                    VStack(alignment: .leading, spacing: 22) {
+                        header
 
-                    SurveyOptionCard(
-                        options: PlantarSurveyOption.severityOptions,
-                        selection: $selectedSeverity,
-                        tint: brandGreen
-                    )
+                        SurveyOptionCard(
+                            options: PlantarSurveyOption.severityOptions,
+                            selection: $selectedSeverity,
+                            tint: brandGreen
+                        )
 
-                    SurveySection(
-                        title: "How many hours on your feet daily?",
-                        options: PlantarSurveyOption.dailyHoursOptions,
-                        selection: $selectedDailyHours,
-                        tint: brandGreen
-                    )
+                        SurveySection(
+                            title: "How many hours on your feet daily?",
+                            options: PlantarSurveyOption.dailyHoursOptions,
+                            selection: $selectedDailyHours,
+                            tint: brandGreen
+                        )
 
-                    SurveySection(
-                        title: "What best describes your typical day?",
-                        options: PlantarSurveyOption.typicalDayOptions,
-                        selection: $selectedTypicalDay,
-                        tint: brandGreen
-                    )
-                }
-                .padding(.horizontal, 20)
-                .padding(.top, 16)
-                .padding(.bottom, 84)
-            }
-            .safeAreaInset(edge: .bottom, spacing: 0) {
-                actions
+                        SurveySection(
+                            title: "What best describes your typical day?",
+                            options: PlantarSurveyOption.typicalDayOptions,
+                            selection: $selectedTypicalDay,
+                            tint: brandGreen
+                        )
+                    }
                     .padding(.horizontal, 20)
-                    .padding(.bottom, 8)
-                    .background(.clear)
-            }
-            .overlay(alignment: .top) {
-                topScrollBlur
+                    .padding(.top, 16)
+                    .padding(.bottom, 84)
+                }
+                .safeAreaInset(edge: .bottom, spacing: 0) {
+                    actions
+                        .padding(.horizontal, 20)
+                        .padding(.bottom, 8)
+                        .background(.clear)
+                }
+
+                Color(.systemBackground)
+                    .frame(height: proxy.safeAreaInsets.top)
+                    .ignoresSafeArea(edges: .top)
+                    .allowsHitTesting(false)
             }
         }
     }
@@ -63,15 +67,6 @@ struct PlantarSurveyScreen: View {
     private var background: some View {
         Color(.systemBackground)
             .ignoresSafeArea()
-    }
-
-    private var topScrollBlur: some View {
-        Rectangle()
-            .fill(.ultraThinMaterial)
-            .frame(height: 150)
-            
-            .ignoresSafeArea(edges: .top)
-            .allowsHitTesting(false)
     }
 
 
