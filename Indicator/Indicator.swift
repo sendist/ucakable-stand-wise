@@ -174,6 +174,11 @@ extension ConfigurationAppIntent {
     SimpleEntry(date: .now, metrics: .preview, configuration: .smiley)
     SimpleEntry(
         date: .now,
+        metrics: StandWiseWidgetMetrics(stepCount: 3_250, standingMinutes: 315, status: .caution),
+        configuration: .smiley
+    )
+    SimpleEntry(
+        date: .now,
         metrics: StandWiseWidgetMetrics(stepCount: 4_250, standingMinutes: 390, status: .warning),
         configuration: .starEyes
     )
