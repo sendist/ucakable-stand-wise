@@ -54,11 +54,32 @@
 			);
 			target = 837ACBF62FBC494E004F1B0C /* IndicatorExtension */;
 		};
+		83A1849C2FC71E6800E79522 /* Exceptions for "Feature" folder in "IndicatorExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Home/HomeView.swift,
+				Home/PainLog.swift,
+				Home/SnoozeView.swift,
+				Onboarding/CalenderAccessScreen.swift,
+				Onboarding/HealthAccessScreen.swift,
+				Onboarding/OnboardingSuccessScreen.swift,
+				Onboarding/OnboardingView.swift,
+				Onboarding/PlantarSurveyScreen.swift,
+				Onboarding/ProfileSetupScreen.swift,
+				Onboarding/WelcomeScreen.swift,
+				Statistics/StatisticsScreen.swift,
+				Stretching/StretchingScreen.swift,
+			);
+			target = 837ACBF62FBC494E004F1B0C /* IndicatorExtension */;
+		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		8339B2C12FC3FA7900A5129B /* Feature */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				83A1849C2FC71E6800E79522 /* Exceptions for "Feature" folder in "IndicatorExtension" target */,
+			);
 			path = Feature;
 			sourceTree = "<group>";
 		};
