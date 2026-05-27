@@ -13,6 +13,7 @@ import Observation
 final class HealthManager {
     var todaySteps: Int = 0
     var todayStandingMinutes: Int = 0
+    var todaySleepMinutes: Int = 0
     var isLoading = false
     var errorMessage: String?
 
@@ -37,8 +38,13 @@ final class HealthManager {
             return
         }
 
-        guard let standHourType = HKCategoryType.categoryType(forIdentifier: .appleStandHour) else {
+        guard let standTimeType = HKQuantityType.quantityType(forIdentifier: .appleStandTime) else {
             errorMessage = "Standing time is not available."
+            return
+        }
+
+        guard let sleepType = HKCategoryType.categoryType(forIdentifier: .sleepAnalysis) else {
+            errorMessage = "Sleep analysis is not available."
             return
         }
 
@@ -46,9 +52,10 @@ final class HealthManager {
         errorMessage = nil
 
         do {
-            try await requestAuthorization(reading: [stepType, standHourType])
+            try await requestAuthorization(reading: [stepType, standTimeType, sleepType])
             todaySteps = try await fetchTodaySteps(for: stepType)
-            todayStandingMinutes = try await fetchTodayStandingMinutes(for: standHourType)
+            todayStandingMinutes = try await fetchTodayStandingMinutes(for: standTimeType)
+            todaySleepMinutes = try await fetchTodaySleepMinutes(for: sleepType)
         } catch {
             errorMessage = error.localizedDescription
         }
@@ -62,8 +69,13 @@ final class HealthManager {
             return
         }
 
-        guard let standHourType = HKCategoryType.categoryType(forIdentifier: .appleStandHour) else {
+        guard let standTimeType = HKQuantityType.quantityType(forIdentifier: .appleStandTime) else {
             errorMessage = "Standing time is not available."
+            return
+        }
+
+        guard let sleepType = HKCategoryType.categoryType(forIdentifier: .sleepAnalysis) else {
+            errorMessage = "Sleep analysis is not available."
             return
         }
 
@@ -72,7 +84,8 @@ final class HealthManager {
 
         do {
             todaySteps = try await fetchTodaySteps(for: stepType)
-            todayStandingMinutes = try await fetchTodayStandingMinutes(for: standHourType)
+            todayStandingMinutes = try await fetchTodayStandingMinutes(for: standTimeType)
+            todaySleepMinutes = try await fetchTodaySleepMinutes(for: sleepType)
         } catch {
             errorMessage = error.localizedDescription
         }
@@ -122,7 +135,7 @@ final class HealthManager {
         }
     }
 
-    private func fetchTodayStandingMinutes(for standHourType: HKCategoryType) async throws -> Int {
+    private func fetchTodayStandingMinutes(for standTimeType: HKQuantityType) async throws -> Int {
         let calendar = Calendar.current
         let startOfDay = calendar.startOfDay(for: Date())
         let predicate = HKQuery.predicateForSamples(
@@ -132,8 +145,37 @@ final class HealthManager {
         )
 
         return try await withCheckedThrowingContinuation { continuation in
+            let query = HKStatisticsQuery(
+                quantityType: standTimeType,
+                quantitySamplePredicate: predicate,
+                options: .cumulativeSum
+            ) { _, samples, error in
+                if let error {
+                    continuation.resume(throwing: error)
+                    return
+                }
+
+                let standingMinutes = samples?.sumQuantity()?.doubleValue(for: .minute()) ?? 0
+                continuation.resume(returning: Int(standingMinutes.rounded()))
+            }
+
+            healthStore.execute(query)
+        }
+    }
+
+    private func fetchTodaySleepMinutes(for sleepType: HKCategoryType) async throws -> Int {
+        let calendar = Calendar.current
+        let startOfDay = calendar.startOfDay(for: Date())
+        let now = Date()
+        let predicate = HKQuery.predicateForSamples(
+            withStart: startOfDay,
+            end: now,
+            options: .strictEndDate
+        )
+
+        return try await withCheckedThrowingContinuation { continuation in
             let query = HKSampleQuery(
-                sampleType: standHourType,
+                sampleType: sleepType,
                 predicate: predicate,
                 limit: HKObjectQueryNoLimit,
                 sortDescriptors: nil
@@ -143,12 +185,22 @@ final class HealthManager {
                     return
                 }
 
-                let stoodHours = samples?
+                let sleepMinutes = samples?
                     .compactMap { $0 as? HKCategorySample }
-                    .filter { $0.value == HKCategoryValueAppleStandHour.stood.rawValue }
-                    .count ?? 0
+                    .filter { sample in
+                        guard let value = HKCategoryValueSleepAnalysis(rawValue: sample.value) else {
+                            return false
+                        }
 
-                continuation.resume(returning: stoodHours * 60)
+                        return HKCategoryValueSleepAnalysis.allAsleepValues.contains(value)
+                    }
+                    .reduce(0.0) { total, sample in
+                        let startDate = max(sample.startDate, startOfDay)
+                        let endDate = min(sample.endDate, now)
+                        return total + max(0, endDate.timeIntervalSince(startDate) / 60)
+                    } ?? 0
+
+                continuation.resume(returning: Int(sleepMinutes.rounded()))
             }
 
             healthStore.execute(query)

@@ -152,8 +152,12 @@ struct OnboardingView: View {
             types.insert(stepCount)
         }
 
-        if let standHour = HKObjectType.categoryType(forIdentifier: .appleStandHour) {
-            types.insert(standHour)
+        if let standTime = HKObjectType.quantityType(forIdentifier: .appleStandTime) {
+            types.insert(standTime)
+        }
+
+        if let sleepAnalysis = HKObjectType.categoryType(forIdentifier: .sleepAnalysis) {
+            types.insert(sleepAnalysis)
         }
 
         return types

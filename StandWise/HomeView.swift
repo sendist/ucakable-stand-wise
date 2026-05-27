@@ -52,6 +52,17 @@ struct HomeView: View {
     private var restTimeText: String {
         formattedDuration(minutes: max(0, 8 * 60 - healthManager.todayStandingMinutes))
     }
+    private var nonActiveTimeText: String {
+        let calendar = Calendar.current
+        let now = Date()
+        let startOfDay = calendar.startOfDay(for: now)
+        let components = calendar.dateComponents([.minute], from: startOfDay, to: now)
+        let totalMinutesPassed = components.minute ?? 0
+        let excludedMinutes = healthManager.todayStandingMinutes + healthManager.todaySleepMinutes
+        let nonActiveMinutes = max(0, totalMinutesPassed - excludedMinutes)
+
+        return formattedDuration(minutes: nonActiveMinutes)
+    }
 
     var body: some View {
         GeometryReader { proxy in
@@ -210,7 +221,7 @@ struct HomeView: View {
                     .fixedSize(horizontal: false, vertical: true)
             }
 
-            if status != .safe {
+            if status == .warning {
                 statusActions(tint: badgeColor, status: status)
             }
 
@@ -338,7 +349,7 @@ struct HomeView: View {
 
             statDivider
 
-            statItem(icon: "sofa.fill", value: restTimeText, label: "Rest")
+            statItem(icon: "sofa.fill", value: nonActiveTimeText, label: "Rest")
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 20)
