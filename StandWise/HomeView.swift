@@ -15,9 +15,12 @@ struct HomeView: View {
     @AppStorage("lastCautionNotificationDay") private var lastCautionNotificationDay = ""
     @AppStorage("warningAcknowledgedDay") private var warningAcknowledgedDay = ""
     @AppStorage("warningSnoozeMinutes") private var warningSnoozeMinutes = 14
+    @AppStorage("activityCardImpacts") private var storedActivityImpacts = Data()
+    @AppStorage("activityCardManualActivities") private var storedManualActivities = Data()
 
     @State private var isShowingSnooze = false
     @State private var healthManager = HealthManager()
+    @State private var notificationEventManager = EventManager()
 
     private let brandGreen = Color(red: 0.05, green: 0.48, blue: 0.22)
     private let cautionRed = Color(.systemRed)
@@ -93,7 +96,10 @@ struct HomeView: View {
         .sheet(isPresented: $isShowingSnooze) {
             SnoozeView { minutes in
                 Task {
-                    await scheduleWarningReminder(after: minutes)
+                    await scheduleWarningReminder(
+                        after: minutes,
+                        hasHighImpactActivityAhead: upcomingHighImpactActivityTitle() != nil
+                    )
                 }
             }
                 .presentationDetents([.height(460)])
@@ -102,6 +108,7 @@ struct HomeView: View {
         }
         .task {
             await healthManager.requestAuthorizationAndFetchTodayMetrics()
+            await notificationEventManager.refreshTodayActivities()
             await evaluateNotifications()
         }
         .onChange(of: healthManager.todaySteps) {
@@ -110,6 +117,16 @@ struct HomeView: View {
             }
         }
         .onChange(of: healthManager.todayStandingMinutes) {
+            Task {
+                await evaluateNotifications()
+            }
+        }
+        .onChange(of: storedActivityImpacts) {
+            Task {
+                await evaluateNotifications()
+            }
+        }
+        .onChange(of: storedManualActivities) {
             Task {
                 await evaluateNotifications()
             }
@@ -435,34 +452,83 @@ struct HomeView: View {
     }
 
     private func evaluateNotifications() async {
+        await notificationEventManager.refreshTodayActivities()
+        let highImpactActivityTitle = upcomingHighImpactActivityTitle()
+
         switch loadStatus {
         case .safe:
             StandWiseNotificationManager.cancelWarningReminder()
         case .caution:
-            await sendCautionNotificationIfNeeded()
+            await sendCautionNotificationIfNeeded(highImpactActivityTitle: highImpactActivityTitle)
             StandWiseNotificationManager.cancelWarningReminder()
         case .warning:
-            await scheduleWarningReminder(after: warningSnoozeMinutes)
+            await scheduleWarningReminder(
+                after: warningSnoozeMinutes,
+                hasHighImpactActivityAhead: highImpactActivityTitle != nil
+            )
         }
     }
 
-    private func sendCautionNotificationIfNeeded() async {
+    private func sendCautionNotificationIfNeeded(highImpactActivityTitle: String?) async {
         let today = notificationDayKey
+        let notificationKey = highImpactActivityTitle == nil ? "\(today)-standard" : "\(today)-high-impact"
 
-        guard lastCautionNotificationDay != today else {
+        guard lastCautionNotificationDay != notificationKey else {
             return
         }
 
-        lastCautionNotificationDay = today
-        await StandWiseNotificationManager.sendCautionNotification()
+        lastCautionNotificationDay = notificationKey
+        await StandWiseNotificationManager.sendCautionNotification(
+            standingMinutes: healthManager.todayStandingMinutes,
+            highImpactActivityTitle: highImpactActivityTitle,
+            stepCapacityUsed: stepProgress
+        )
     }
 
-    private func scheduleWarningReminder(after minutes: Int) async {
+    private func scheduleWarningReminder(after minutes: Int, hasHighImpactActivityAhead: Bool) async {
         guard warningAcknowledgedDay != notificationDayKey else {
             return
         }
 
-        await StandWiseNotificationManager.scheduleWarningReminder(after: minutes)
+        await StandWiseNotificationManager.scheduleWarningReminder(
+            after: minutes,
+            hasHighImpactActivityAhead: hasHighImpactActivityAhead
+        )
+    }
+
+    private func upcomingHighImpactActivityTitle() -> String? {
+        let now = Date()
+        let manualActivities = decodedManualActivities()
+        let activityImpacts = decodedActivityImpacts()
+
+        let upcomingManualActivities = manualActivities.compactMap { activity -> (title: String, startDate: Date)? in
+            guard activity.startDate > now && activity.impact == .high else {
+                return nil
+            }
+
+            return (activity.title, activity.startDate)
+        }
+
+        let upcomingCalendarActivities = notificationEventManager.todayActivities.compactMap { activity -> (title: String, startDate: Date)? in
+            guard activity.startDate > now && activityImpacts[activity.id, default: .mid] == .high else {
+                return nil
+            }
+
+            return (activity.title, activity.startDate)
+        }
+
+        return (upcomingManualActivities + upcomingCalendarActivities)
+            .sorted { $0.startDate < $1.startDate }
+            .first?
+            .title
+    }
+
+    private func decodedManualActivities() -> [ActivityItem] {
+        (try? JSONDecoder().decode([ActivityItem].self, from: storedManualActivities)) ?? []
+    }
+
+    private func decodedActivityImpacts() -> [String: ActivityImpact] {
+        (try? JSONDecoder().decode([String: ActivityImpact].self, from: storedActivityImpacts)) ?? [:]
     }
 
     private func acknowledgeStatus(_ status: FootLoadStatus) {
