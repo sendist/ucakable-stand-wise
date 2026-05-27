@@ -20,7 +20,7 @@ struct StandWiseApp: App {
     var body: some Scene {
         WindowGroup {
             OnboardingView()
-                .modelContainer(for: [Item.self, User.self])
+                .modelContainer(for: [Item.self, User.self, PainLogEntry.self])
         }
     }
 }

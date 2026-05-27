@@ -11,6 +11,7 @@ import UIKit
 
 struct HomeView: View {
     let user: User
+    @Query(sort: \PainLogEntry.logTime, order: .reverse) private var painLogEntries: [PainLogEntry]
 
     @AppStorage("lastCautionNotificationDay") private var lastCautionNotificationDay = ""
     @AppStorage("warningAcknowledgedDay") private var warningAcknowledgedDay = ""
@@ -56,6 +57,16 @@ struct HomeView: View {
     private var restTimeText: String {
         formattedDuration(minutes: max(0, 8 * 60 - healthManager.todayStandingMinutes))
     }
+
+    private var todaysPainLogCount: Int {
+        let startOfDay = Calendar.current.startOfDay(for: Date())
+        return painLogEntries.filter { $0.logTime >= startOfDay }.count
+    }
+
+    private var todaysPainLogCountText: String {
+        todaysPainLogCount == 1 ? "1 entry" : "\(todaysPainLogCount) entries"
+    }
+
     private var nonActiveTimeText: String {
         let calendar = Calendar.current
         let now = Date()
@@ -315,7 +326,7 @@ struct HomeView: View {
                     .font(.caption.weight(.semibold))
                     .foregroundStyle(.secondary)
 
-                Text("6 entries")
+                Text(todaysPainLogCountText)
                     .font(.headline.weight(.semibold))
                     .foregroundStyle(.primary)
 
@@ -608,6 +619,6 @@ private struct ActivityDetailPlaceholder: View {
 #Preview("home") {
     NavigationStack {
         HomeView(user: User(name: "User", footCondition: .moderate, standCondition: .mild))
-            .modelContainer(for: User.self, inMemory: true)
+            .modelContainer(for: [User.self, PainLogEntry.self], inMemory: true)
     }
 }

@@ -6,11 +6,17 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct PainLogView: View {
+    @Environment(\.dismiss) private var dismiss
+    @Environment(\.modelContext) private var modelContext
+
     @State private var selectedLocation = "Heel"
     @State private var selectedSeverity = 3
     @State private var selectedContexts: Set<String> = []
+    @State private var healthManager = HealthManager()
+    @State private var saveErrorMessage: String?
 
     private let painLocations = ["Heel", "Arch", "Ball of Foot", "Toes"]
     private let contextOptions = ["Just started", "Been hurting a while", "After sitting down"]
@@ -34,6 +40,9 @@ struct PainLogView: View {
         .navigationTitle("Pain Log")
         .navigationBarTitleDisplayMode(.inline)
         .tint(brandGreen)
+        .task {
+            await healthManager.requestAuthorizationAndFetchTodayMetrics()
+        }
     }
 
     private var background: some View {
@@ -108,7 +117,7 @@ struct PainLogView: View {
                 .foregroundStyle(brandGreen)
                 .padding(.top, 2)
 
-            Text("Past 4h: 5,200 steps • 3.5h standing • 1 heavy event (Site Visit, 2 PM). Likely trigger: prolonged standing.")
+            Text("Current activity: \(healthManager.todaySteps.formatted()) steps • \(formattedDuration(minutes: healthManager.todayStandingMinutes)) standing.")
                 .font(.footnote)
                 .foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
@@ -123,15 +132,24 @@ struct PainLogView: View {
     }
 
     private var saveButton: some View {
-        Button {
-            // Presentation only. Persistence will be added with reminder logic later.
-        } label: {
-            Text("Save Pain Log")
-                .frame(maxWidth: .infinity)
+        VStack(spacing: 10) {
+            if let saveErrorMessage {
+                Text(saveErrorMessage)
+                    .font(.footnote)
+                    .foregroundStyle(.red)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
+
+            Button {
+                savePainLog()
+            } label: {
+                Text("Save Pain Log")
+                    .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(.borderedProminent)
+            .controlSize(.large)
+            .tint(brandGreen)
         }
-        .buttonStyle(.borderedProminent)
-        .controlSize(.large)
-        .tint(brandGreen)
     }
 
     private func sectionTitle(_ title: String) -> some View {
@@ -145,6 +163,40 @@ struct PainLogView: View {
             selectedContexts.remove(option)
         } else {
             selectedContexts.insert(option)
+        }
+    }
+
+    private func savePainLog() {
+        let sortedContexts = selectedContexts.sorted()
+        let context = sortedContexts.isEmpty ? nil : sortedContexts.joined(separator: ", ")
+        let entry = PainLogEntry(
+            painLocation: selectedLocation,
+            painSeverity: selectedSeverity,
+            context: context,
+            stepCount: healthManager.todaySteps,
+            standTimeMinutes: healthManager.todayStandingMinutes
+        )
+
+        modelContext.insert(entry)
+
+        do {
+            try modelContext.save()
+            dismiss()
+        } catch {
+            saveErrorMessage = "Failed to save pain log: \(error.localizedDescription)"
+        }
+    }
+
+    private func formattedDuration(minutes: Int) -> String {
+        let hours = minutes / 60
+        let remainingMinutes = minutes % 60
+
+        if hours > 0 && remainingMinutes > 0 {
+            return "\(hours)h \(remainingMinutes)m"
+        } else if hours > 0 {
+            return "\(hours)h"
+        } else {
+            return "\(remainingMinutes)m"
         }
     }
 }

@@ -55,6 +55,7 @@ struct ContentView: View {
     let container = try! ModelContainer(
         for: Item.self,
         User.self,
+        PainLogEntry.self,
         configurations: ModelConfiguration(isStoredInMemoryOnly: true)
     )
     let user = User(name: "User", footCondition: .moderate, standCondition: .mild)
