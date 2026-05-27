@@ -12,7 +12,5 @@ import SwiftUI
 struct IndicatorBundle: WidgetBundle {
     var body: some Widget {
         Indicator()
-        IndicatorControl()
-        IndicatorLiveActivity()
     }
 }

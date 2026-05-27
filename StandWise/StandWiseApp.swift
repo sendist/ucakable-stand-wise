@@ -13,6 +13,7 @@ import UserNotifications
 struct StandWiseApp: App {
     private let notificationDelegate = StandWiseNotificationDelegate()
     @State private var isShowingSplash = true
+    @State private var shouldOpenPainLog = false
 
     init() {
         UNUserNotificationCenter.current().delegate = notificationDelegate
@@ -28,10 +29,18 @@ struct StandWiseApp: App {
                             isShowingSplash = false
                         }
                 } else {
-                    OnboardingView()
+                    OnboardingView(shouldOpenPainLog: $shouldOpenPainLog)
                 }
             }
             .modelContainer(for: [Item.self, User.self, PainLogEntry.self])
+            .onOpenURL { url in
+                guard url.scheme == "standwise", url.host == "pain-log" else {
+                    return
+                }
+
+                isShowingSplash = false
+                shouldOpenPainLog = true
+            }
         }
     }
 }
