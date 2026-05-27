@@ -12,6 +12,7 @@ import UserNotifications
 @main
 struct StandWiseApp: App {
     private let notificationDelegate = StandWiseNotificationDelegate()
+    @State private var isShowingSplash = true
 
     init() {
         UNUserNotificationCenter.current().delegate = notificationDelegate
@@ -19,8 +20,18 @@ struct StandWiseApp: App {
 
     var body: some Scene {
         WindowGroup {
-            OnboardingView()
-                .modelContainer(for: [Item.self, User.self, PainLogEntry.self])
+            Group {
+                if isShowingSplash {
+                    SplashScreen()
+                        .task {
+                            try? await Task.sleep(for: .seconds(1.2))
+                            isShowingSplash = false
+                        }
+                } else {
+                    OnboardingView()
+                }
+            }
+            .modelContainer(for: [Item.self, User.self, PainLogEntry.self])
         }
     }
 }

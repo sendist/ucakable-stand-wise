@@ -17,7 +17,7 @@ struct OnboardingView: View {
     @Query(sort: \User.createdAt) private var users: [User]
 
     @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding = false
-    @State private var step: OnboardingStep = .splash
+    @State private var step: OnboardingStep = .welcome
     @State private var isOnboardingCompleted = false
     @State private var profileName = ""
     @State private var profileImageData: Data?
@@ -39,13 +39,6 @@ struct OnboardingView: View {
     @ViewBuilder
     private var currentStep: some View {
         switch step {
-        case .splash:
-            ScreenPage()
-                .task {
-                    try? await Task.sleep(for: .seconds(1.2))
-                    goToNextStep()
-                }
-
         case .welcome:
             WelcomeScreen(onGetStarted: goToNextStep)
 
@@ -200,7 +193,6 @@ struct OnboardingView: View {
 }
 
 private enum OnboardingStep {
-    case splash
     case welcome
     case profileSetup
     case healthAccess
@@ -210,8 +202,6 @@ private enum OnboardingStep {
 
     var next: OnboardingStep? {
         switch self {
-        case .splash:
-            .welcome
         case .welcome:
             .profileSetup
         case .profileSetup:
