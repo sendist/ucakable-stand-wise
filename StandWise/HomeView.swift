@@ -7,6 +7,7 @@
 
 import SwiftData
 import SwiftUI
+import UIKit
 
 struct HomeView: View {
     let user: User
@@ -141,6 +142,25 @@ struct HomeView: View {
 
             Spacer(minLength: 12)
 
+            profileImage
+        }
+    }
+
+    @ViewBuilder
+    private var profileImage: some View {
+        if let profileImageData = user.profileImageData,
+           let uiImage = UIImage(data: profileImageData) {
+            Image(uiImage: uiImage)
+                .resizable()
+                .scaledToFill()
+                .frame(width: 56, height: 56)
+                .clipShape(Circle())
+                .overlay {
+                    Circle()
+                        .strokeBorder(Color.primary.opacity(0.08), lineWidth: 1)
+                }
+                .accessibilityLabel("Profile picture")
+        } else {
             Image(systemName: "person.circle.fill")
                 .font(.system(size: 52))
                 .symbolRenderingMode(.hierarchical)

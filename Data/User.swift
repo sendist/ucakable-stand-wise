@@ -103,13 +103,22 @@ final class User {
     var footCondition: String
     var standCondition: String
     var maxFootLoad: Int
+    @Attribute(.externalStorage) var profileImageData: Data?
     var createdAt: Date
 
-    init(name: String, footCondition: FootCondition, standCondition: StandCondition, maxFootLoad: Int? = nil, createdAt: Date = Date()) {
+    init(
+        name: String,
+        footCondition: FootCondition,
+        standCondition: StandCondition,
+        maxFootLoad: Int? = nil,
+        profileImageData: Data? = nil,
+        createdAt: Date = Date()
+    ) {
         self.name = name
         self.footCondition = footCondition.rawValue
         self.standCondition = standCondition.rawValue
         self.maxFootLoad = maxFootLoad ?? footCondition.maxSteps
+        self.profileImageData = profileImageData
         self.createdAt = createdAt
     }
 
