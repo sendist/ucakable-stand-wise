@@ -77,7 +77,17 @@ struct HealthAccessScreen: View {
             PermissionRow(
                 icon: "figure.stand",
                 title: "Stand Time",
-                subtitle: "Minutes standing per hour",
+                subtitle: "Minutes standing",
+                tint: brandGreen
+            )
+
+            Divider()
+                .padding(.leading)
+
+            PermissionRow(
+                icon: "bed.double.fill",
+                title: "Sleep Analysis",
+                subtitle: "Excluded from non-active time",
                 tint: brandGreen
             )
         }
