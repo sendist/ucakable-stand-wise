@@ -15,6 +15,7 @@ import UIKit
 struct OnboardingView: View {
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \User.createdAt) private var users: [User]
+    @Binding var shouldOpenPainLog: Bool
 
     @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding = false
     @State private var step: OnboardingStep = .welcome
@@ -28,7 +29,7 @@ struct OnboardingView: View {
     var body: some View {
         Group {
             if hasCompletedOnboarding || isOnboardingCompleted {
-                ContentView()
+                ContentView(shouldOpenPainLog: $shouldOpenPainLog)
             } else {
                 currentStep
             }
@@ -219,5 +220,5 @@ private enum OnboardingStep {
 }
 
 #Preview("onboarding-flow") {
-    OnboardingView()
+    OnboardingView(shouldOpenPainLog: .constant(false))
 }

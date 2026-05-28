@@ -11,6 +11,7 @@ import UIKit
 
 struct HomeView: View {
     let user: User
+    @Binding var shouldOpenPainLog: Bool
     @Query(sort: \PainLogEntry.logTime, order: .reverse) private var painLogEntries: [PainLogEntry]
 
     @AppStorage("lastCautionNotificationDay") private var lastCautionNotificationDay = ""
@@ -104,6 +105,9 @@ struct HomeView: View {
         }
         .navigationBarTitleDisplayMode(.inline)
         .toolbar(.hidden, for: .navigationBar)
+        .navigationDestination(isPresented: $shouldOpenPainLog) {
+            PainLogView()
+        }
         .sheet(isPresented: $isShowingSnooze) {
             SnoozeView { minutes in
                 Task {
@@ -618,7 +622,10 @@ private struct ActivityDetailPlaceholder: View {
 
 #Preview("home") {
     NavigationStack {
-        HomeView(user: User(name: "User", footCondition: .moderate, standCondition: .mild))
+        HomeView(
+            user: User(name: "User", footCondition: .moderate, standCondition: .mild),
+            shouldOpenPainLog: .constant(false)
+        )
             .modelContainer(for: [User.self, PainLogEntry.self], inMemory: true)
     }
 }

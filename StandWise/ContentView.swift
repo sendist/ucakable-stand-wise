@@ -10,13 +10,14 @@ import SwiftData
 
 struct ContentView: View {
     @Query(sort: \User.createdAt) private var users: [User]
+    @Binding var shouldOpenPainLog: Bool
     private let brandGreen = Color(red: 0.05, green: 0.48, blue: 0.22)
 
     var body: some View {
         TabView {
             appTab(title: "Home", icon: "house") {
                 if let user = users.first {
-                    HomeView(user: user)
+                    HomeView(user: user, shouldOpenPainLog: $shouldOpenPainLog)
                 } else {
                     ProgressView("Preparing dashboard...")
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -61,6 +62,6 @@ struct ContentView: View {
     let user = User(name: "User", footCondition: .moderate, standCondition: .mild)
     container.mainContext.insert(user)
 
-    return ContentView()
+    return ContentView(shouldOpenPainLog: .constant(false))
         .modelContainer(container)
 }
