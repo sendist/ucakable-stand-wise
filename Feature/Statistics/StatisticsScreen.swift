@@ -14,25 +14,27 @@ struct StatisticsScreen: View {
     private let brandGreen = Color(red: 0.05, green: 0.48, blue: 0.22)
 
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 16) {
-                header
+        Group {
+            if painLogEntries.isEmpty {
+                emptyState
+            } else {
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 16) {
+                        header
 
-                if painLogEntries.isEmpty {
-                    emptyState
-                } else {
-                    VStack(spacing: 10) {
-                        ForEach(painLogEntries) { entry in
-                            painLogRow(entry)
+                        VStack(spacing: 10) {
+                            ForEach(painLogEntries) { entry in
+                                painLogRow(entry)
+                            }
                         }
                     }
+                    .padding(.horizontal, 24)
+                    .padding(.top, 16)
+                    .padding(.bottom, 28)
                 }
             }
-            .padding(.horizontal, 24)
-            .padding(.top, 16)
-            .padding(.bottom, 28)
         }
-        .background(Color(.systemGroupedBackground).ignoresSafeArea())
+        .background(Color(.systemBackground).ignoresSafeArea())
         .navigationTitle("Statistics")
         .navigationBarTitleDisplayMode(.inline)
     }
@@ -56,8 +58,8 @@ struct StatisticsScreen: View {
         } description: {
             Text("Saved pain logs will appear here.")
         }
-        .frame(maxWidth: .infinity)
-        .padding(.top, 80)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+        .padding(.horizontal, 24)
     }
 
     private func painLogRow(_ entry: PainLogEntry) -> some View {
@@ -97,7 +99,7 @@ struct StatisticsScreen: View {
         }
         .padding(16)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color(.secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+        .background(Color(.secondarySystemBackground), in: RoundedRectangle(cornerRadius: 16, style: .continuous))
         .overlay {
             RoundedRectangle(cornerRadius: 16, style: .continuous)
                 .strokeBorder(Color.primary.opacity(0.06), lineWidth: 1)

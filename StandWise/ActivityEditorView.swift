@@ -60,7 +60,7 @@ struct ActivityEditorView: View {
                     TextField("Title", text: $activity.title)
                         .textInputAutocapitalization(.words)
                 }
-                .listRowBackground(Color(.secondarySystemGroupedBackground))
+                .listRowBackground(Color(.secondarySystemBackground))
 
                 Section {
                     Picker("Level", selection: $activity.impact) {
@@ -83,7 +83,7 @@ struct ActivityEditorView: View {
                         displayedComponents: activity.isAllDay ? [.date] : [.date, .hourAndMinute]
                     )
                 }
-                .listRowBackground(Color(.secondarySystemGroupedBackground))
+                .listRowBackground(Color(.secondarySystemBackground))
 
                 if !isNew {
                     Section {
@@ -92,7 +92,7 @@ struct ActivityEditorView: View {
                             dismiss()
                         }
                     }
-                    .listRowBackground(Color(.secondarySystemGroupedBackground))
+                    .listRowBackground(Color(.secondarySystemBackground))
                 }
             }
             .scrollContentBackground(.hidden)
@@ -119,7 +119,7 @@ struct ActivityEditorView: View {
     }
 
     private var background: some View {
-        Color(.systemGroupedBackground)
+        Color(.systemBackground)
             .ignoresSafeArea()
     }
 

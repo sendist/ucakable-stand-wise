@@ -12,7 +12,7 @@ struct StretchingScreen: View {
 
     var body: some View {
         ZStack {
-            Color(.systemGroupedBackground)
+            Color(.systemBackground)
                 .ignoresSafeArea()
 
             ContentUnavailableView {

@@ -62,7 +62,7 @@ struct SnoozeView: View {
     }
 
     private var background: some View {
-        Color(.systemGroupedBackground)
+        Color(.systemBackground)
             .ignoresSafeArea()
     }
 
@@ -105,7 +105,7 @@ struct SnoozeView: View {
         .padding(.vertical, 12)
         .padding(.horizontal, 16)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color(.secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+        .background(Color(.secondarySystemBackground), in: RoundedRectangle(cornerRadius: 16, style: .continuous))
     }
 
     private var durationCard: some View {
@@ -127,7 +127,7 @@ struct SnoozeView: View {
         }
         .padding(16)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color(.secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 20, style: .continuous))
+        .background(Color(.secondarySystemBackground), in: RoundedRectangle(cornerRadius: 20, style: .continuous))
     }
 
     private func saveDuration() {

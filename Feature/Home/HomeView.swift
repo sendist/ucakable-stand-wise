@@ -119,7 +119,7 @@ struct HomeView: View {
             }
                 .presentationDetents([.height(460)])
                 .presentationDragIndicator(.visible)
-                .presentationBackground(Color(.systemGroupedBackground))
+                .presentationBackground(Color(.systemBackground))
         }
         .task {
             await healthManager.requestAuthorizationAndFetchTodayMetrics()

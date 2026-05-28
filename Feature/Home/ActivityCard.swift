@@ -57,7 +57,7 @@ struct ActivityCard: View {
             }
             .presentationDetents([.medium, .large])
             .presentationDragIndicator(.visible)
-            .presentationBackground(Color(.systemGroupedBackground))
+            .presentationBackground(Color(.systemBackground))
         }
     }
 
@@ -368,7 +368,7 @@ private struct ActivityCardEditorView: View {
                     TextField("Title", text: $activity.title)
                         .textInputAutocapitalization(.words)
                 }
-                .listRowBackground(Color(.secondarySystemGroupedBackground))
+                .listRowBackground(Color(.secondarySystemBackground))
 
                 Section {
                     Picker("Impact", selection: $activity.impact) {
@@ -391,7 +391,7 @@ private struct ActivityCardEditorView: View {
                         displayedComponents: activity.isAllDay ? [.date] : [.date, .hourAndMinute]
                     )
                 }
-                .listRowBackground(Color(.secondarySystemGroupedBackground))
+                .listRowBackground(Color(.secondarySystemBackground))
 
                 if !isNew {
                     Section {
@@ -400,7 +400,7 @@ private struct ActivityCardEditorView: View {
                             dismiss()
                         }
                     }
-                    .listRowBackground(Color(.secondarySystemGroupedBackground))
+                    .listRowBackground(Color(.secondarySystemBackground))
                 }
             }
             .scrollContentBackground(.hidden)
@@ -427,7 +427,7 @@ private struct ActivityCardEditorView: View {
     }
 
     private var background: some View {
-        Color(.systemGroupedBackground)
+        Color(.systemBackground)
             .ignoresSafeArea()
     }
 
